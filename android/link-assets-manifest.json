@@ -1,0 +1,21 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/DynaPuff-Bold.ttf",
+      "sha1": "c218120995717c05bf27c178df5356998cfb0e0a"
+    },
+    {
+      "path": "src/assets/fonts/DynaPuff-Medium.ttf",
+      "sha1": "58740b8c7fa80d41cb65bbc9336ac24bc9eb8845"
+    },
+    {
+      "path": "src/assets/fonts/DynaPuff-Regular.ttf",
+      "sha1": "70dc7413055d0d6938421266665dcf3a1961bc07"
+    },
+    {
+      "path": "src/assets/fonts/DynaPuff-SemiBold.ttf",
+      "sha1": "456f117e922f099c2cec706abc0e4e4df7835e69"
+    }
+  ]
+}
