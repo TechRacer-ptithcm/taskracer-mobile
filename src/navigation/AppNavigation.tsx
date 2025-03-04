@@ -11,7 +11,7 @@ export const AppNavigation = () => {
     return (
         <NavigationContainer>
             {loading && <></>}
-            {!user ? <AuthNavigator/> : <BottomBarNavigator/>}
+            {user ? <AuthNavigator/> : <BottomBarNavigator/>}
         </NavigationContainer>
     );
 };

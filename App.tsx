@@ -5,10 +5,13 @@
  * @format
  */
 
-import React from 'react';
+// import React from 'react';
 import { Provider } from 'react-redux';
 import store from './src/redux/store';
 import { AppNavigation } from './src/navigation/AppNavigation';
+import { useFonts } from 'expo-font';
+import { useEffect } from 'react';
+ import * as SplashScreen from 'expo-splash-screen'; 
 
 // type SectionProps = PropsWithChildren<{
 //   title: string;
@@ -39,13 +42,25 @@ import { AppNavigation } from './src/navigation/AppNavigation';
 //     </View>
 //   );
 // }
-
+SplashScreen.preventAutoHideAsync();
 function App(): React.JSX.Element {
+const [loaded, error] = useFonts({
+    'DynaPuff-Bold': require('./src/assets/fonts/DynaPuff-Bold.ttf'),
+    'DynaPuff-Regular': require('./src/assets/fonts/DynaPuff-Regular.ttf'),
+  });
 
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
+    }
+  }, [loaded, error]);
+
+  if (!loaded && !error) {
+    return  <></>;
+  }
   return (
     <Provider store={store}>
       <AppNavigation/>
-      {/* <Text>Ahhi</Text> */}
     </Provider>
   );
 }
