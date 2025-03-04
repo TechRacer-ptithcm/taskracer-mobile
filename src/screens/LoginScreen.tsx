@@ -12,8 +12,6 @@ import { ClickableCircle } from '../components/ClickableCircle';
 import GoogleIcon from '../assets/icons/GoogleIcon.jsx';
 import { validateEmail, validatePassword } from '../utils/auth.ts';
 import { useNavigation } from '@react-navigation/native';
-import { RegisterString } from '../constants/screen.ts';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
 export const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
@@ -34,26 +32,26 @@ export const LoginScreen = () => {
     return (
         <View style = {{position: 'relative', flex: 1, justifyContent: 'center', alignItems: 'center', padding: AppPadding}} >
             <OverlayBubbleAnimation/>
-            <Title title = "Login here" size={28} color={PrimaryColorRed}/>
+            <Title title = "Login here" size={28} color={PrimaryColorRed} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={10}/>
-            <Title title = "Welcome back you’ve been missed" size = {20} color = {GrayColor}/>
+            <Title title = "Welcome back you’ve been missed" size = {20} color = {GrayColor} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={50}/>
             <Input placeholder={'Email'} type={InputEmail} value={email} onChangeText={setEmail} />
             <Input placeholder={'Password'} type={InputPassword} value={password} onChangeText={setPassword} />
             <View style = {{width: '100%', alignItems: 'flex-end'}}>
                 <TouchableOpacity onPress={handleForgotPassword}>
-                    <Title title="Forgot password" color={PrimaryColorRed} size={12}/>
+                    <Title title="Forgot password" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
                 </TouchableOpacity>
             </View>
             <Space space={20}/>
             <Button title="Sign in" color={PrimaryColorRed} fullWidth={true} disable={(validatePassword(password) && validateEmail(email)) ? false : true} onClick={handleLogin}/>
             <Space space={8}/>
             <TouchableOpacity onPress={()=>{}}>
-                <Title title="Haven't had account? Register" color={PrimaryColorRed} size={12}/>
+                <Title title="Haven't had account? Register" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>
 
-            <Title title="Or continue with" color={PrimaryColorRed} size={12}/>
+            <Title title="Or continue with" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <ClickableCircle size={50} color={WhiteColor} onPress={handleLoginWithGoogle}>
                 <GoogleIcon width={24} height={24} color={PurpleColor}/>
             </ClickableCircle>

@@ -13,7 +13,7 @@ type ButtonProps = {
 export const Button = ({title, color, fullWidth,disable, onClick}:ButtonProps) => {
     return (
         <TouchableOpacity style = {{width: fullWidth ? '100%' : 'auto', padding: 10, backgroundColor: !disable ? color : DisableColor, borderRadius: 20, alignItems: 'center', justifyContent: 'center'}} onPress={onClick}disabled={disable}>
-            <Title title={title} color={WhiteColor} size={16}/>
+            <Title title={title} color={WhiteColor} size={16} type = {true} horizontalPadding={0} verticalPadding={0}/>
         </TouchableOpacity>
     );
 };

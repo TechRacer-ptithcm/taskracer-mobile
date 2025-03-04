@@ -26,9 +26,9 @@ export const RegisterScreen = () => {
     return (
         <View style = {{position: 'relative', flex: 1, justifyContent: 'center', alignItems: 'center', padding: AppPadding}} >
             <OverlayBubbleAnimation/>
-            <Title title = "Register here" size={28} color={PrimaryColorRed}/>
+            <Title title = "Register here" size={28} color={PrimaryColorRed} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={10}/>
-            <Title title = "Create an account so you can live your better life" size = {16} color = {GrayColor}/>
+            <Title title = "Create an account so you can live your better life" size = {16} color = {GrayColor} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={50}/>
             <Input placeholder={'User name'} type={InputNormal} value={userName} onChangeText={setUserName} />
             <Input placeholder={'Email'} type={InputEmail} value={email} onChangeText={setEmail} />
@@ -37,11 +37,11 @@ export const RegisterScreen = () => {
             <Button title="Sign up" color={PrimaryColorRed} fullWidth={true} disable={(userName && validatePassword(password) && validateEmail(email)) ? false : true} onClick={handleSignUp}/>
             <Space space={8}/>
             <TouchableOpacity>
-                <Title title="Already have an account? Login" color={PrimaryColorRed} size={12}/>
+                <Title title="Already have an account? Login" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>
 
-            <Title title="Or continue with" color={PrimaryColorRed} size={12}/>
+            <Title title="Or continue with" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <ClickableCircle size={50} color={WhiteColor} onPress={() => {}}>
                 <GoogleIcon width={24} height={24} color={PurpleColor}/>
             </ClickableCircle>
