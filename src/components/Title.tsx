@@ -11,10 +11,11 @@ type TitleComponentProps = {
 };
 export const Title = ({title, size, color, type, horizontalPadding, verticalPadding}: TitleComponentProps) => {
     return (
-        <View style={{alignItems: 'flex-start', maxWidth: 300, paddingLeft: horizontalPadding, paddingRight: horizontalPadding, paddingTop: verticalPadding, paddingBottom: verticalPadding}}>
+        <View style={{alignItems: 'flex-start', maxWidth: 350, paddingLeft: horizontalPadding, paddingRight: horizontalPadding, paddingTop: verticalPadding, paddingBottom: verticalPadding}}>
             <Text style={{fontSize: size, fontFamily: type ? 'DynaPuff-Bold' : 'DynaPuff-Regular', color, textAlign: 'left'}}>
                 {title}
             </Text>
         </View>
     );
 };
+
