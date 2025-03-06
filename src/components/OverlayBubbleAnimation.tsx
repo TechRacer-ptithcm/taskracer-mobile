@@ -97,7 +97,7 @@ export const OverlayBubbleAnimation = () => {
                     backgroundColor: BubbleColor,
                     borderRadius: 200,
                     position: 'absolute',
-                    bottom: 200,
+                    top: 550,
                     transform: [{translateY: translateYBubble2}, {translateX: translateXBubble2}],
 
                 }} />
@@ -108,7 +108,7 @@ export const OverlayBubbleAnimation = () => {
                     backgroundColor: BubbleColor,
                     borderRadius: 100,
                     position: 'absolute',
-                    bottom: 500,
+                    top: 300,
                     transform: [{translateX: translateXBubble2}],
 
                 }} />
