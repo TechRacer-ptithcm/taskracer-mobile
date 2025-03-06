@@ -6,30 +6,32 @@ import ScrollPicker from "react-native-wheel-scrollview-picker";
 import { useState } from "react";
 import { Space } from "./Space";
 import { Button } from "./Button";
+import { setFocusTime } from "../redux/slices/appSlice";
+import { useAppDispatch } from "../redux/hooks";
+import { useSelector } from "react-redux";
+import { breakTimeSelector, focusTimeSelector } from "../redux/selectors/appSelectors";
 
 
 type SetPomodoroProps = {
     setOpenSetModeCenter: React.Dispatch<React.SetStateAction<boolean>>,
-    minuteDozen: number,
-    minuteUnit: number,
-    secondDozen: number,
-    secondUnit: number
 }
 
-export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, secondDozen, secondUnit} : SetPomodoroProps)=>{
-    const [minuteDozenFocus, setMinuteDozenFocus] = useState(0);
-    const [minuteUnitFocus, setMinuteUnitFocus] = useState(0);
-    const [secondeDozenFocus, setSecondeDozenFocus] = useState(0);
-    const [secondeUnitFocus, setSecondeUnitFocus] = useState(0);
-    const [minuteDozenBreak, setMinuteDozenBreak] = useState(0);
-    const [minuteUnitBreak, setMinuteUnitBreak] = useState(0);
-    const [secondeDozenBreak, setSecondeDozenBreak] = useState(0);
-    const [secondeUnitBreak, setSecondeUnitBreak] = useState(0);
+export const SetPomodoro = ({setOpenSetModeCenter} : SetPomodoroProps)=>{
+    const focusTime = useSelector(focusTimeSelector);
+    const [minuteDozenFocus, setMinuteDozenFocus] = useState(focusTime[0]);
+    const [minuteUnitFocus, setMinuteUnitFocus] = useState(focusTime[1]);
+    const [secondeDozenFocus, setSecondeDozenFocus] = useState(focusTime[2]);
+    const [secondeUnitFocus, setSecondeUnitFocus] = useState(focusTime[3]);
+    const dispatch = useAppDispatch();
+    const breakTime = useSelector(breakTimeSelector);
+    const [minuteDozenBreak, setMinuteDozenBreak] = useState(breakTime[0]);
+    const [minuteUnitBreak, setMinuteUnitBreak] = useState(breakTime[1]);
+    const [secondeDozenBreak, setSecondeDozenBreak] = useState(breakTime[2]);
+    const [secondeUnitBreak, setSecondeUnitBreak] = useState(breakTime[3]);
     return (
-        <View>
+        <View style = {{position: 'absolute' , top: 0, bottom: 0, left: 0, right: 0}}>
             <View style = {{position: 'absolute', justifyContent: 'center', alignItems: 'center', backgroundColor: '#222', opacity:0.5, top: 0, bottom: 0, left: 0, right: 0}}/>
             <View style = {{position: 'absolute', justifyContent: 'center', alignItems: 'center', top: 0, bottom: 0, left: 0, right: 0}}>
-                
                 <View style = {{minWidth: 400, minHeight: 300, backgroundColor: WhiteColor, borderRadius: 20, padding:20}}>
                     <TouchableOpacity style = {{alignSelf: 'flex-end'}} onPress={()=>{
                         setOpenSetModeCenter(false);
@@ -41,7 +43,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={minuteDozen}
+                                selectedIndex={minuteDozenFocus}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -61,7 +63,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={minuteUnit}
+                                selectedIndex={minuteUnitFocus}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -81,7 +83,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={secondDozen}
+                                selectedIndex={secondeDozenFocus}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -101,7 +103,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={secondUnit}
+                                selectedIndex={secondeUnitFocus}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -124,7 +126,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={0}
+                                selectedIndex={minuteDozenBreak}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -144,7 +146,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={0}
+                                selectedIndex={minuteUnitBreak}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -164,7 +166,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={0}
+                                selectedIndex={secondeDozenBreak}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -184,7 +186,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                         <View style = {{flex: 1, height: 80}}>
                             <ScrollPicker
                                 dataSource={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]}
-                                selectedIndex={0}
+                                selectedIndex={secondeUnitBreak}
                                 // renderItem={(data, index) => {
                                 // //
                                 // }}
@@ -206,6 +208,7 @@ export const SetPomodoro = ({setOpenSetModeCenter, minuteDozen, minuteUnit, seco
                     <View style={{marginTop: 12, marginBottom: 12}}>
                         <Button title='Set Pomodoro' color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{
                             setOpenSetModeCenter(false);
+                            dispatch(setFocusTime([minuteDozenFocus, minuteUnitFocus, secondeDozenFocus, secondeUnitFocus]));
                         }}/>
                     </View>
                 </View>
