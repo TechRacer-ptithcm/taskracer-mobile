@@ -9,7 +9,8 @@ import { Space } from '../components/Space';
 import { Chat } from '../components/Chat';
 import { Post } from '../components/Post';
 import { Profile } from '../components/Profile';
-import { SilverI } from '../constants/rank';
+import { BronzeI, SilverI } from '../constants/rank';
+import { World } from '../components/World';
 
 
 export const RankScreen = () => {
@@ -30,7 +31,7 @@ export const RankScreen = () => {
             {mode ? 
             <Profile avata='' userName='Alexanbeo Grandmother' rank={SilverI} focusTimeMilisec={(new Date()).valueOf()}/>
                 : 
-                <></>
+            <World/>
             }
         </View>
     );

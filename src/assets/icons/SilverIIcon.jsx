@@ -9,7 +9,7 @@ import Svg, {
   Stop
 } from "react-native-svg"
 
-function SilverI(props) {
+function SilverIIcon(props) {
   return (
     <Svg
       viewBox="-3.5 0 32 32"
@@ -85,4 +85,4 @@ function SilverI(props) {
   )
 }
 
-export default SilverI
+export default SilverIIcon
