@@ -85,10 +85,10 @@ export const ChatScreen = () => {
             <View style = {{padding: AppPadding, paddingTop: 80}}>
                 <View style = {{flexDirection: 'row', backgroundColor: BackgroundColor, borderRadius: 20, overflow:'hidden'}}>
                     <TouchableOpacity style = {{backgroundColor: mode ? PrimaryColorBlue: BackgroundColor, flex:1, borderRadius: 20, alignItems: 'center', paddingTop:6, paddingBottom: 6}} onPress={()=>{setMode(true)}}>
-                        <Title title='Message' color={mode ? WhiteColor: GrayColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                        <Title title='Message' color={mode ? WhiteColor: GrayColor} size={18} type={true} horizontalPadding={0} verticalPadding={0}/>
                     </TouchableOpacity>
                     <TouchableOpacity style = {{backgroundColor: mode ? BackgroundColor: PrimaryColorBlue, flex:1, borderRadius: 20, alignItems: 'center', paddingTop:6, paddingBottom: 6}} onPress={()=>{setMode(false)}}>
-                        <Title title='Posts' color={mode ? GrayColor: WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                        <Title title='Posts' color={mode ? GrayColor: WhiteColor} size={18} type={true} horizontalPadding={0} verticalPadding={0}/>
                     </TouchableOpacity>
                 </View>
                 <Space space={24}/>
