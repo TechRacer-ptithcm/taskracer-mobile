@@ -6,7 +6,7 @@ import ScrollPicker from "react-native-wheel-scrollview-picker";
 import { useState } from "react";
 import { Space } from "./Space";
 import { Button } from "./Button";
-import { setFocusTime } from "../redux/slices/appSlice";
+import { setBreakTime, setFocusTime } from "../redux/slices/appSlice";
 import { useAppDispatch } from "../redux/hooks";
 import { useSelector } from "react-redux";
 import { breakTimeSelector, focusTimeSelector } from "../redux/selectors/appSelectors";
@@ -206,9 +206,12 @@ export const SetPomodoro = ({setOpenSetModeCenter} : SetPomodoroProps)=>{
                     </View>
                     <Space space={24}/>
                     <View style={{marginTop: 12, marginBottom: 12}}>
+
                         <Button title='Set Pomodoro' color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{
+                            console.log("ahih")
                             setOpenSetModeCenter(false);
                             dispatch(setFocusTime([minuteDozenFocus, minuteUnitFocus, secondeDozenFocus, secondeUnitFocus]));
+                            dispatch(setBreakTime([minuteDozenBreak, minuteUnitBreak, secondeDozenBreak, secondeUnitBreak]))
                         }}/>
                     </View>
                 </View>

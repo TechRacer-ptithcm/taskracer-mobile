@@ -6,3 +6,5 @@ export const PomodoroString: string = "pomodoro";
 export const ChatString: string = "chat";
 export const RankString: string = "rank";
 export const OtpString: string = "otp";
+export const AuthStackString: string = "auth";
+export const MainStackString: string = "main";

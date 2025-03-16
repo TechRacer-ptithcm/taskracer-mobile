@@ -11,16 +11,35 @@ import { ClickableCircle } from '../components/ClickableCircle';
 import GoogleIcon from '../assets/icons/GoogleIcon';
 import { AppPadding } from '../constants/spaces';
 import { validateEmail, validatePassword } from '../utils/auth';
+import { register } from '../services/register';
+import { useNavigation } from '@react-navigation/native';
+import { sentOTP } from '../services/sendOTP';
+import { OtpString } from '../constants/screen';
 
 export const RegisterScreen = () => {
     const [userName, setUserName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const handleSignUp = ()=>{
+    const navigation = useNavigation();
+    const handleSignUp = async ()=>{
         if (!userName || !email || !password){
             Alert.alert("Please provide enough field")
         } else{
-            //handle sign up
+            await register({username:userName, password, email})
+                .then(res=>{
+                    //navigate to otp
+                    if (res && res.data.username){
+                        return sentOTP({account: res.data.username})
+                    }
+                })
+                .then(res=>{
+                    if (res && res.status && userName){
+                        navigation.navigate(OtpString, {account:userName, type: "REGISTER"});
+                    }
+                })
+                .catch(error=>{
+                    console.log("After registering error with message:", error);
+                })
         }
     }
     return (
@@ -28,7 +47,7 @@ export const RegisterScreen = () => {
             <OverlayBubbleAnimation/>
             <Title title = "Register here" size={28} color={PrimaryColorRed} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={10}/>
-            <Title title = "Create an account so you can live your better life" size = {16} color = {GrayColor} type = {true} horizontalPadding={0} verticalPadding={0}/>
+            <Title center={true} title = "Create an account so you can live your better life" size = {16} color = {GrayColor} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={50}/>
             <Input placeholder={'User name'} type={InputNormal} value={userName} onChangeText={setUserName} />
             <Input placeholder={'Email'} type={InputEmail} value={email} onChangeText={setEmail} />
@@ -40,7 +59,6 @@ export const RegisterScreen = () => {
                 <Title title="Already have an account? Login" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>
-
             <Title title="Or continue with" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <ClickableCircle size={50} color={WhiteColor} onPress={() => {}}>
                 <GoogleIcon width={24} height={24} color={PurpleColor}/>

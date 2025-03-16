@@ -12,6 +12,7 @@ import { AppNavigation } from './src/navigation/AppNavigation';
 import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
  import * as SplashScreen from 'expo-splash-screen'; 
+import { OTPScreen } from './src/screens/OTPScreen';
 
 // type SectionProps = PropsWithChildren<{
 //   title: string;
@@ -61,6 +62,7 @@ const [loaded, error] = useFonts({
   return (
     <Provider store={store}>
       <AppNavigation/>
+      {/* <OTPScreen /> */}
     </Provider>
   );
 }

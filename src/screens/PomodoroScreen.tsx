@@ -29,6 +29,9 @@ export const PomodoroScreen = () => {
     const [openSetModeCenter, setOpenSetModeCenter] = useState(false);
     const pomoMode = useSelector(pomoModeSelector);
     useEffect(()=>{
+        console.log("break time")
+    }, [breakTime])
+    useEffect(()=>{
         const animation = Animated.loop(
                 Animated.sequence([
                     Animated.timing(scaleBubble, {

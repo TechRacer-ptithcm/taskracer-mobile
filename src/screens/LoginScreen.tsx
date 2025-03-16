@@ -3,28 +3,74 @@ import { OverlayBubbleAnimation } from '../components/OverlayBubbleAnimation';
 import { Space } from '../components/Space';
 import { GrayColor, PrimaryColorRed, PurpleColor, WhiteColor } from '../assets/color';
 import { Title } from '../components/Title';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Input } from '../components/Input';
-import { InputEmail, InputPassword } from '../constants/strings';
+import { InputEmail, InputNormal, InputPassword } from '../constants/strings';
 import { AppPadding } from '../constants/spaces';
 import { Button } from '../components/Button';
 import { ClickableCircle } from '../components/ClickableCircle';
 import GoogleIcon from '../assets/icons/GoogleIcon.jsx';
 import { validateEmail, validatePassword } from '../utils/auth.ts';
 import { useNavigation } from '@react-navigation/native';
+import { login } from '../services/login';
+import { useDispatch, useSelector } from 'react-redux';
+import { setLoading, setPomoMode } from '../redux/slices/appSlice';
+import { Loading } from '../components/Loading';
+import { useAppDispatch } from '../redux/hooks';
+import store from '../redux/store';
+import { loadingSelector, pomoModeSelector } from '../redux/selectors/appSelectors';
+import { setToken, setUser } from '../redux/slices/authSlice';
+import { MainStackString, OtpString, RegisterString } from '../constants/screen';
+import { sentOTP } from '../services/sendOTP';
 export const LoginScreen = () => {
     const [password, setPassword] = useState('');
-    const [email, setEmail] = useState('');
+    const [account, setAccount] = useState('');
+    const loading = useSelector(loadingSelector);
+
+    const dispatch = useAppDispatch()
     const navigation = useNavigation();
-    const handleLogin = ()=>{
-        if (!password || !email){
+    const handleLogin = async ()=>{
+        if (!password || !account){
             Alert.alert('Please provide enough field');
         } else{
-            //sent to server
+            dispatch(setLoading(true))
+            return await login({account, password})
+                .then(res=>{
+                    if (res){
+                        //set actk
+                        if (res.data.access_token){
+                            dispatch(setToken(res.data.access_token));
+                            dispatch(setLoading(false))
+                            navigation.navigate(MainStackString)
+                            dispatch(setUser({ah:'a'}))
+                        }
+                    }
+                })
+                .catch(error=>{
+                    console.log("Store accesstoken error with message:", error);
+                })
         }
     };
-    const handleForgotPassword = ()=>{
-        // do something
+    const handleForgotPassword = async ()=>{
+        if (account){
+            dispatch(setLoading(true))
+            await sentOTP({account})
+                .then(res=>{
+                    if (res && res.status){
+                        dispatch(setLoading(false));
+                        navigation.navigate(OtpString, {account: account, type: "RESET_PASSWORD"});
+                    } else{
+                        Alert.alert("Username is not valid.")
+                        dispatch(setLoading(false));
+                    }
+                })
+                .catch(error=>{
+                    console.log("After sending OTP error with message:", error)
+                })
+
+        } else{
+            Alert.alert("Provide your username or email to reset password")
+        }
     };
     const handleLoginWithGoogle = ()=>{
         // do something
@@ -36,7 +82,7 @@ export const LoginScreen = () => {
             <Space space={10}/>
             <Title title = "Welcome back you’ve been missed" size = {20} color = {GrayColor} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <Space space={50}/>
-            <Input placeholder={'Email'} type={InputEmail} value={email} onChangeText={setEmail} />
+            <Input placeholder={'Email or Username'} type={InputNormal} value={account} onChangeText={setAccount} />
             <Input placeholder={'Password'} type={InputPassword} value={password} onChangeText={setPassword} />
             <View style = {{width: '100%', alignItems: 'flex-end'}}>
                 <TouchableOpacity onPress={handleForgotPassword}>
@@ -44,9 +90,9 @@ export const LoginScreen = () => {
                 </TouchableOpacity>
             </View>
             <Space space={20}/>
-            <Button title="Sign in" color={PrimaryColorRed} fullWidth={true} disable={(validatePassword(password) && validateEmail(email)) ? false : true} onClick={handleLogin}/>
+            <Button title="Sign in" color={PrimaryColorRed} fullWidth={true} disable={(validatePassword(password)&&account.length!=0) ? false : true} onClick={handleLogin}/>
             <Space space={8}/>
-            <TouchableOpacity onPress={()=>{}}>
+            <TouchableOpacity onPress={()=>{navigation.navigate(RegisterString)}}>
                 <Title title="Haven't had account? Register" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>

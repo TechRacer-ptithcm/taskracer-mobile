@@ -1,7 +1,7 @@
 import { Dimensions, FlatList, ScrollView, Text, Touchable, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-big-calendar';
 import { AppPadding } from '../constants/spaces';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { BackgroundColor, GrayColor, GreenColor, NotificationColor, PrimaryColorBlue, PrimaryColorRed, PurpleColor, WhiteColor } from '../assets/color';
 import { Title } from '../components/Title';
 import { Space } from '../components/Space';
@@ -74,7 +74,7 @@ export const CalendarScreen = () => {
         },
     ])
     const [listDate, setListDate] = useState([new Date()])
-    useEffect(()=>{
+    useLayoutEffect(()=>{
         let listLeft: Date[] = []
         let listRight: Date[] = []
         let currentDate = new Date();
@@ -109,6 +109,7 @@ export const CalendarScreen = () => {
         }
     }
     const flatListRef = useRef<FlatList>(null);
+    const [initialScrollCalendarView, setInitialScrollCalendarView] = useState(362)
     return (
         <View key = {calendarMode} style = {{padding: AppPadding, paddingTop: 32, position: 'relative'}} onLayout={(event)=>{
                 let setValue = event.nativeEvent.layout.width;
@@ -133,6 +134,7 @@ export const CalendarScreen = () => {
                 </View>
             </View>
             <Calendar 
+                
                 date={dateFocused}
                 eventCellStyle={{justifyContent: 'center', backgroundColor: 'transparent', width: ((width*0.8)/(maxCount)),  borderRadius: 12, minWidth: 0, margin: 0, position: 'absolute', shadowColor: 'transparent'}}
                 hourStyle={{fontFamily: 'DynaPuff-Bold', color: GrayColor}}
@@ -146,7 +148,7 @@ export const CalendarScreen = () => {
                         <FlatList 
                             style={{paddingBottom: 12}}
                             ref={flatListRef} 
-                            initialScrollIndex={362} 
+                            initialScrollIndex={initialScrollCalendarView} 
                             horizontal={true} 
                             showsHorizontalScrollIndicator={false} 
                             data={listDate} 
@@ -158,10 +160,11 @@ export const CalendarScreen = () => {
                             onScrollToIndexFailed={(info)=>{
                                 flatListRef.current?.scrollToOffset({offset: info.averageItemLength * info.index, animated: true})
                             }}
-                            renderItem={({item})=>{
+                            renderItem={({item, index})=>{
                                 return (
                                     <DateComponent isFocus={item.getDate() === dateFocused.getDate() && item.getMonth()===dateFocused.getMonth() && item.getFullYear()===dateFocused.getFullYear()} dateValue={item} onClick={()=>{
                                         setDateFocused(item)
+                                        setInitialScrollCalendarView(index);
                                     }}/>
                                 )
                             
@@ -187,6 +190,7 @@ export const CalendarScreen = () => {
                         )
                     }
                 }}
+                swipeEnabled={false}
                 events={events} 
                 height={height-90} 
                 mode={calendarMode || 'day'} 

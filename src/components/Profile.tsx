@@ -10,6 +10,10 @@ import UserIcon from "../assets/icons/UserIcon"
 import MailIcon from "../assets/icons/MailIcon"
 import LockIcon from "../assets/icons/LockIcon"
 import { LinearGradient } from "expo-linear-gradient"
+import { useAppDispatch } from "../redux/hooks"
+import { useNavigation } from "@react-navigation/native"
+import { AuthStackString } from "../constants/screen"
+import { resetAuth } from "../redux/slices/authSlice"
 
 type ProfileProps = {
     avata: string,
@@ -19,6 +23,8 @@ type ProfileProps = {
 }
 
 export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps)=>{
+    const navigation = useNavigation()
+    const dispatch = useAppDispatch()
     return (
         <View>
             <View style = {{width: '100%', paddingLeft: AppPadding, paddingRight: AppPadding, marginTop: 36, alignItems: 'center'}}>
@@ -67,7 +73,10 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     <LockIcon width={28} height={28} color={GrayColor}/>
                 } onPress={()=>{}}/>
                 <Space space={12}/>
-                <TouchableOpacity style = {{padding: 20, backgroundColor: BackgroundColor, justifyContent: 'center', alignItems: 'center', borderRadius: 20}}>
+                <TouchableOpacity onPress={()=>{
+                    dispatch(resetAuth());
+                    navigation.navigate(AuthStackString);
+                }} style = {{padding: 20, backgroundColor: BackgroundColor, justifyContent: 'center', alignItems: 'center', borderRadius: 20}}>
                     <Title title="Logout" color={GrayColor} size={18} type={true} horizontalPadding={0} verticalPadding={0}/>
                 </TouchableOpacity>
             </View>
