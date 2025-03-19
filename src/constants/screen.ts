@@ -8,3 +8,4 @@ export const RankString: string = "rank";
 export const OtpString: string = "otp";
 export const AuthStackString: string = "auth";
 export const MainStackString: string = "main";
+export const ChangePassString: string = "change_pass";

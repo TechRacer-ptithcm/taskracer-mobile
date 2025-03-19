@@ -20,7 +20,7 @@ import { useAppDispatch } from '../redux/hooks';
 import store from '../redux/store';
 import { loadingSelector, pomoModeSelector } from '../redux/selectors/appSelectors';
 import { setToken, setUser } from '../redux/slices/authSlice';
-import { MainStackString, OtpString, RegisterString } from '../constants/screen';
+import { LoginString, MainStackString, OtpString, RegisterString } from '../constants/screen';
 import { sentOTP } from '../services/sendOTP';
 export const LoginScreen = () => {
     const [password, setPassword] = useState('');
@@ -35,6 +35,10 @@ export const LoginScreen = () => {
         } else{
             dispatch(setLoading(true))
             return await login({account, password})
+                .then((res) => {
+                console.log("Login successfully", res.data);
+                return res.data;
+                })
                 .then(res=>{
                     if (res){
                         //set actk
@@ -47,7 +51,9 @@ export const LoginScreen = () => {
                     }
                 })
                 .catch(error=>{
-                    console.log("Store accesstoken error with message:", error);
+                    console.log("Login error with message:", error);
+                    dispatch(setLoading(false));
+                    Alert.alert("Username or password is not valid.")
                 })
         }
     };
@@ -58,7 +64,7 @@ export const LoginScreen = () => {
                 .then(res=>{
                     if (res && res.status){
                         dispatch(setLoading(false));
-                        navigation.navigate(OtpString, {account: account, type: "RESET_PASSWORD"});
+                        navigation.navigate(OtpString, {account: account, type: LoginString});
                     } else{
                         Alert.alert("Username is not valid.")
                         dispatch(setLoading(false));

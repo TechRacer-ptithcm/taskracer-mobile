@@ -14,7 +14,7 @@ import { validateEmail, validatePassword } from '../utils/auth';
 import { register } from '../services/register';
 import { useNavigation } from '@react-navigation/native';
 import { sentOTP } from '../services/sendOTP';
-import { OtpString } from '../constants/screen';
+import { LoginString, OtpString, RegisterString } from '../constants/screen';
 
 export const RegisterScreen = () => {
     const [userName, setUserName] = useState('');
@@ -29,12 +29,7 @@ export const RegisterScreen = () => {
                 .then(res=>{
                     //navigate to otp
                     if (res && res.data.username){
-                        return sentOTP({account: res.data.username})
-                    }
-                })
-                .then(res=>{
-                    if (res && res.status && userName){
-                        navigation.navigate(OtpString, {account:userName, type: "REGISTER"});
+                        navigation.navigate(OtpString, {account:res.data.username, type: RegisterString});
                     }
                 })
                 .catch(error=>{
@@ -55,7 +50,9 @@ export const RegisterScreen = () => {
             <Space space={20}/>
             <Button title="Sign up" color={PrimaryColorRed} fullWidth={true} disable={(userName && validatePassword(password) && validateEmail(email)) ? false : true} onClick={handleSignUp}/>
             <Space space={8}/>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={()=>{
+                navigation.navigate(LoginString)
+            }}>
                 <Title title="Already have an account? Login" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>

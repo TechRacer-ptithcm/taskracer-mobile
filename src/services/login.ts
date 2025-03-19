@@ -23,17 +23,9 @@ export interface LoginParams {
 
 export const login = async (data: LoginParams) => {
   console.log(`${process.env.EXPO_PUBLIC_BASE_URL}/auth/sign-in`);
-  return axios
-    .post<LoginResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/auth/sign-in`,
-      data,
-      { headers: { "Content-Type": "application/json" } }
-    )
-    .then((res) => {
-      console.log("Login successfully", res.data);
-      return res.data;
-    })
-    .catch((error) => {
-      console.log("Login error with message:", error);
-    });
+  return axios.post<LoginResponse>(
+    `${process.env.EXPO_PUBLIC_BASE_URL}/auth/sign-in`,
+    data,
+    { headers: { "Content-Type": "application/json" } }
+  );
 };

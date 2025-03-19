@@ -6,9 +6,12 @@ import { useEffect, useRef, useState } from "react"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { setLoading } from "../redux/slices/appSlice"
 import { useAppDispatch } from "../redux/hooks"
-import { LoginString, MainStackString } from "../constants/screen"
+import { ChangePassString, LoginString, MainStackString, RegisterString } from "../constants/screen"
 import { resentOTP } from "../services/resendOTP"
 import { sentOTP } from "../services/sendOTP"
+import { verifyUser } from "../services/verifyUser"
+import { ChangePasswordScreen } from "./ChangePasswordScreen"
+import { verifyForgotOTP } from "../services/verifyFogotOTP"
 
 
 type OTPScreenParams = {
@@ -16,7 +19,7 @@ type OTPScreenParams = {
     type: string,
 }
 type RootStackParamList = {
-  OTP: OTPScreenParams;
+    OTP: OTPScreenParams;
 };
 type OTPScreenRouteProp = RouteProp<RootStackParamList, "OTP">;
 export const OTPScreen = ({route}: {route: OTPScreenRouteProp})=>{
@@ -37,8 +40,36 @@ export const OTPScreen = ({route}: {route: OTPScreenRouteProp})=>{
         }
         if (newOtp[0] && newOtp[1] && newOtp[2] && newOtp[3] && newOtp[4] && newOtp[5]){
             //let's check and reset password.
-            console.log('hanlde')
-            navigation.navigate(MainStackString)
+            dispatch(setLoading(true));
+            if (type === RegisterString){
+                const otpCode = newOtp.join('');
+                verifyUser({otp: otpCode})
+                    .then(res=>{
+                        if (res && res.status){
+                            navigation.navigate(MainStackString)
+                        }
+                    })
+                    .catch(error=>{
+                        console.log("After verifying error with message:", error);
+                    })
+                    .finally(()=>{
+                        dispatch(setLoading(false));
+                    })
+            } else {
+                const otpCode = newOtp.join('');
+                verifyForgotOTP({otp: otpCode})
+                    .then(res=>{
+                        if (res && res.status){
+                            navigation.navigate(ChangePassString, {token: res.data.token})
+                        }
+                    })
+                    .catch(error=>{
+                        console.log("After verifying error with message:", error);
+                    })
+                    .finally(()=>{
+                        dispatch(setLoading(false));
+                    })
+            }
         }
     };
 
