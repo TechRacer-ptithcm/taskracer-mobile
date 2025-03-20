@@ -21,9 +21,11 @@ import { setBreakTime, setFocusTime, setPomoMode } from '../redux/slices/appSlic
 
 
 export const PomodoroScreen = () => {
-    const scaleBubble = useRef(new Animated.Value(1)).current;
     const focusTime = useSelector(focusTimeSelector);
     const breakTime = useSelector(breakTimeSelector);
+    const [focusTimeState, setFocusTimeState] = useState([focusTime[0], focusTime[1], focusTime[2], focusTime[3]]);
+    const [breakTimeState, setBreakTimeState] = useState([breakTime[0], breakTime[1], breakTime[2], breakTime[3]]);
+    const scaleBubble = useRef(new Animated.Value(1)).current;
     const dispatch = useAppDispatch();
     const [startPomo, setStartPomo] = useState(false);
     const [openSetModeCenter, setOpenSetModeCenter] = useState(false);
@@ -46,7 +48,6 @@ export const PomodoroScreen = () => {
                             duration: 5000,
                             useNativeDriver: true,
                     }),
-                    
                 ])
             )
         if (startPomo){
@@ -56,10 +57,11 @@ export const PomodoroScreen = () => {
         }
     }, [startPomo])
     useEffect(()=>{
-        let minuteDozen = pomoMode === PomoFocusMode ? focusTime[0] : breakTime[0];
-        let minuteUnit = pomoMode === PomoFocusMode ? focusTime[1] : breakTime[1];
-        let secondDozen = pomoMode === PomoFocusMode ? focusTime[2] : breakTime[2];
-        let secondUnit = pomoMode === PomoFocusMode ? focusTime[3] : breakTime[3];
+        let minuteDozen = pomoMode === PomoFocusMode ? focusTimeState[0] : breakTimeState[0];
+        let minuteUnit = pomoMode === PomoFocusMode ? focusTimeState[1] : breakTimeState[1];
+        let secondDozen = pomoMode === PomoFocusMode ? focusTimeState[2] : breakTimeState[2];
+        let secondUnit = pomoMode === PomoFocusMode ? focusTimeState[3] : breakTimeState[3];
+
         if (startPomo){
             setTimeout(()=>{
                 secondUnit = secondUnit - 1 < 0 ? 9 : secondUnit - 1;
@@ -75,13 +77,21 @@ export const PomodoroScreen = () => {
                 }
                 if (minuteUnit === 9 && secondDozen === 5 && secondUnit === 9 && minuteDozen-1 < 0){
                     dispatch(setPomoMode(pomoMode === PomoFocusMode ? PomoBreakMode : PomoFocusMode));
+                    minuteDozen = focusTime[0];
+                    minuteUnit = focusTime[1];
+                    secondDozen = focusTime[2];
+                    secondUnit = focusTime[3];
                 } else if (minuteUnit === 9 && secondDozen === 5 && secondUnit === 9 && minuteDozen-1 >= 0){
                     minuteDozen = minuteDozen-1;
                 }
-                dispatch(pomoMode === PomoFocusMode ? setFocusTime([minuteDozen, minuteUnit, secondDozen, secondUnit]) : setBreakTime([minuteDozen, minuteUnit, secondDozen, secondUnit]))
+                if (pomoMode === PomoFocusMode) {
+                    setFocusTimeState([minuteDozen, minuteUnit, secondDozen, secondUnit]);
+                } else {
+                    setBreakTimeState([minuteDozen, minuteUnit, secondDozen, secondUnit]);
+                }
             }, 1000)
         }
-    }, [startPomo, focusTime, breakTime]);
+    }, [startPomo, focusTime, breakTime, focusTimeState, breakTimeState]);
     return (
         <View style = {{flex: 1, position: 'relative', justifyContent:'center', alignItems:'center'}}>
             <View style = {{flexDirection:'row', position: 'absolute', top:80, justifyContent: 'space-between', width: '100%', paddingLeft: AppPadding, alignItems: 'center', paddingRight: AppPadding}}>
@@ -105,11 +115,11 @@ export const PomodoroScreen = () => {
                 <Animated.View style = {{width: 320, height:320, transform:[{scale: scaleBubble}], borderRadius: 500, backgroundColor: BubbleColor}}/>
             </View>
             <Title title={pomoMode===PomoFocusMode ? "Focus" : "Break"} size={32} color={'#000'} type={true} horizontalPadding={0} verticalPadding={0}/>
-            <Title title={`${pomoMode === PomoFocusMode ? focusTime[0] : breakTime[0]}${pomoMode === PomoFocusMode ? focusTime[1] : breakTime[1]}:${pomoMode === PomoFocusMode ? focusTime[2] : breakTime[2]}${pomoMode === PomoFocusMode ? focusTime[3] : breakTime[3]}`} size={100} color={'#000'} type={true} horizontalPadding={0} verticalPadding={0}/>
+            <Title title={`${pomoMode === PomoFocusMode ? focusTimeState[0] : breakTimeState[0]}${pomoMode === PomoFocusMode ? focusTimeState[1] : breakTimeState[1]}:${pomoMode === PomoFocusMode ? focusTimeState[2] : breakTimeState[2]}${pomoMode === PomoFocusMode ? focusTimeState[3] : breakTimeState[3]}`} size={100} color={'#000'} type={true} horizontalPadding={0} verticalPadding={0}/>
             <TouchableOpacity onPress={()=>{setStartPomo(preState=>!preState)}} style={{position: 'absolute', bottom: 100, backgroundColor: startPomo ? PrimaryColorRed : PrimaryColorBlue, padding:12, borderRadius:12}}>
                 <Title title={startPomo ? 'Stop' : 'Start'} size={32} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
-            {openSetModeCenter ? <SetPomodoro setOpenSetModeCenter={setOpenSetModeCenter}/> : <></>}
+            {openSetModeCenter ? <SetPomodoro setOpenSetModeCenter={setOpenSetModeCenter} setFocusTimeState={setFocusTimeState} setBreakTimeState={setBreakTimeState}/> : <></>}
             <Toast position='bottom'/>
         </View>
     );

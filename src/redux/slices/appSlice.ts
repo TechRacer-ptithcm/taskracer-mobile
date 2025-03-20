@@ -12,6 +12,7 @@ export type App_State = {
 export const initialState: App_State = {
   focusTime: [1, 0, 0, 0],
   breakTime: [0, 0, 0, 0],
+
   pomoMode: PomoNormalMode,
   loading: false,
 };

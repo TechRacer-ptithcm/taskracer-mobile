@@ -14,9 +14,11 @@ import { breakTimeSelector, focusTimeSelector } from "../redux/selectors/appSele
 
 type SetPomodoroProps = {
     setOpenSetModeCenter: React.Dispatch<React.SetStateAction<boolean>>,
+    setFocusTimeState: React.Dispatch<React.SetStateAction<number[]>>,
+    setBreakTimeState: React.Dispatch<React.SetStateAction<number[]>>,
 }
 
-export const SetPomodoro = ({setOpenSetModeCenter} : SetPomodoroProps)=>{
+export const SetPomodoro = ({setOpenSetModeCenter, setFocusTimeState, setBreakTimeState} : SetPomodoroProps)=>{
     const focusTime = useSelector(focusTimeSelector);
     const [minuteDozenFocus, setMinuteDozenFocus] = useState(focusTime[0]);
     const [minuteUnitFocus, setMinuteUnitFocus] = useState(focusTime[1]);
@@ -211,7 +213,9 @@ export const SetPomodoro = ({setOpenSetModeCenter} : SetPomodoroProps)=>{
                             console.log("ahih")
                             setOpenSetModeCenter(false);
                             dispatch(setFocusTime([minuteDozenFocus, minuteUnitFocus, secondeDozenFocus, secondeUnitFocus]));
-                            dispatch(setBreakTime([minuteDozenBreak, minuteUnitBreak, secondeDozenBreak, secondeUnitBreak]))
+                            dispatch(setBreakTime([minuteDozenBreak, minuteUnitBreak, secondeDozenBreak, secondeUnitBreak]));
+                            setFocusTimeState([minuteDozenFocus, minuteUnitFocus, secondeDozenFocus, secondeUnitFocus]);
+                            setBreakTimeState([minuteDozenBreak, minuteUnitBreak, secondeDozenBreak, secondeUnitBreak]);
                         }}/>
                     </View>
                 </View>
