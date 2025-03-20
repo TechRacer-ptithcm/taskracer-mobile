@@ -12,7 +12,7 @@ function ClockIcon(props) {
       <Path
         d="M12 7v5H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z"
         stroke={props.color}
-        strokeWidth={2}
+        strokeWidth={1.5}
         strokeLinecap="round"
         strokeLinejoin="round"
       />
