@@ -7,6 +7,10 @@ import { Title } from '../components/Title';
 import { BackgroundColor, GrayColor, PrimaryColorBlue, WhiteColor } from '../assets/color';
 import { Space } from '../components/Space';
 import BellIcon from '../assets/icons/BellIcon';
+import { useEffect, useState } from 'react';
+import { getAllTasks } from '../services/getAllTasks';
+import { useSelector } from 'react-redux';
+import { tokenSelector } from '../redux/selectors/authSelectors';
 
 
 type TaskScreenProps = {
@@ -21,32 +25,45 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     nextDay.setDate(nextDay.getDate() + 3);
     var previousDay = new Date();
     previousDay.setDate(previousDay.getDate() - 9);
-    const listTask = [{
-        title: "Landing page design",
-        owner: 'Alex Gi',
-        startTime: previousDay,
-        endTime: nextDay
-    },{
-        title: "Landing page design",
-        owner: 'Alex Gi',
-        startTime: previousDay,
-        endTime: nextDay
-    },{
-        title: "Landing page design",
-        owner: 'Alex Gi',
-        startTime: previousDay,
-        endTime: nextDay
-    },{
-        title: "Landing page design",
-        owner: 'Alex Gi',
-        startTime: previousDay,
-        endTime: nextDay
-    },{
-        title: "Landing page design",
-        owner: 'Alex Gi',
-        startTime: previousDay,
-        endTime: nextDay
-    }]
+    // const listTask = [{
+    //     title: "Landing page design",
+    //     owner: 'Alex Gi',
+    //     startTime: previousDay,
+    //     endTime: nextDay
+    // },{
+    //     title: "Landing page design",
+    //     owner: 'Alex Gi',
+    //     startTime: previousDay,
+    //     endTime: nextDay
+    // },{
+    //     title: "Landing page design",
+    //     owner: 'Alex Gi',
+    //     startTime: previousDay,
+    //     endTime: nextDay
+    // },{
+    //     title: "Landing page design",
+    //     owner: 'Alex Gi',
+    //     startTime: previousDay,
+    //     endTime: nextDay
+    // },{
+    //     title: "Landing page design",
+    //     owner: 'Alex Gi',
+    //     startTime: previousDay,
+    //     endTime: nextDay
+    // }]
+    const accessToken = useSelector(tokenSelector);
+    const [listTask, setListTask] = useState([]);
+    useEffect(()=>{
+        getAllTasks({accessToken})
+            .then((res)=>{
+                setListTask(res.data);
+                console.log(res.data)
+            })
+            .catch((err)=>{
+                console.log("Get all tasks error: ", err);
+            });
+    }, [accessToken])
+
     return (
         <View style  ={{position: 'relative', flex:1}}>
             <OverlayBubbleAnimation/>
@@ -70,13 +87,13 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         <Title title='Upcomming Tasks' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
                         <ScrollView style = {{padding: AppPadding, paddingTop: 0, flexDirection:'row', paddingRight: 0}} horizontal={true} showsHorizontalScrollIndicator={false}>
                             {
-                                listTask.map((task, index: number)=>{
-                                    return (
-                                        <View key={Math.random()} style = {{marginRight: 12}}>
-                                            <TaskBig title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
-                                        </View>
-                                    )
-                                })
+                                // listTask.map((task, index: number)=>{
+                                //     return (
+                                //         <View key={Math.random()} style = {{marginRight: 12}}>
+                                //             <TaskBig title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
+                                //         </View>
+                                //     )
+                                // })
                             }
                         </ScrollView>
                     </View>
@@ -104,11 +121,11 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         </ScrollView>
                         <View style = {{padding: AppPadding, paddingTop: 0}}>
                             {
-                                listTask.map((task, index: number)=>{
-                                    return <View key={Math.random()} style={{paddingBottom: 12}}>
-                                            <TaskSmall title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
-                                        </View>
-                                })
+                                // listTask.map((task, index: number)=>{
+                                //     return <View key={Math.random()} style={{paddingBottom: 12}}>
+                                //             <TaskSmall title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
+                                //         </View>
+                                // })
                             }
                         </View>
                     </View>
