@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react"
 import { RouteProp, useNavigation } from "@react-navigation/native"
 import { setLoading } from "../redux/slices/appSlice"
 import { useAppDispatch } from "../redux/hooks"
-import { ChangePassString, LoginString, MainStackString, RegisterString } from "../constants/screen"
+import { ChangePassString, EditUserString, LoginString, MainStackString, RegisterString } from "../constants/screen"
 import { resentOTP } from "../services/resendOTP"
 import { sentOTP } from "../services/sendOTP"
 import { verifyUser } from "../services/verifyUser"
@@ -46,7 +46,7 @@ export const OTPScreen = ({route}: {route: OTPScreenRouteProp})=>{
                 verifyUser({otp: otpCode})
                     .then(res=>{
                         if (res && res.status){
-                            navigation.navigate(MainStackString)
+                            navigation.navigate(EditUserString);
                         }
                     })
                     .catch(error=>{

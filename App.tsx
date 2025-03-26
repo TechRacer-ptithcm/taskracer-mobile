@@ -13,6 +13,7 @@ import { useFonts } from 'expo-font';
 import { useEffect } from 'react';
  import * as SplashScreen from 'expo-splash-screen'; 
 import { OTPScreen } from './src/screens/OTPScreen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // type SectionProps = PropsWithChildren<{
 //   title: string;
@@ -61,7 +62,9 @@ const [loaded, error] = useFonts({
   }
   return (
     <Provider store={store}>
-      <AppNavigation/>
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <AppNavigation/>
+      </GestureHandlerRootView>
       {/* <OTPScreen /> */}
     </Provider>
   );
