@@ -11,21 +11,19 @@ type GetAllTasksResponse = {
   data: GetAllTasksData[];
 };
 
-type GetAllTasksData = {
+export type GetAllTasksData = {
   id: string;
-  parent_id: string;
-  resource_type: string;
-  resource_id: string;
+  parent: string;
+  type: string; //resource_type
+  resourceId: string;
   owner: string;
   content: string;
   priority: string;
   description: string;
-  start_at: Date;
-  due_at: Date;
+  startAt: string;
+  dueAt: string;
   status: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date;
+  users: any;
 };
 
 export const getAllTasks = ({ accessToken }: GetAllTasksParam) => {

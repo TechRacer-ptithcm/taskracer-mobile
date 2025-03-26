@@ -7,10 +7,11 @@ import { Title } from '../components/Title';
 import { BackgroundColor, GrayColor, PrimaryColorBlue, WhiteColor } from '../assets/color';
 import { Space } from '../components/Space';
 import BellIcon from '../assets/icons/BellIcon';
-import { useEffect, useState } from 'react';
-import { getAllTasks } from '../services/getAllTasks';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { getAllTasks, GetAllTasksData } from '../services/getAllTasks';
 import { useSelector } from 'react-redux';
 import { tokenSelector } from '../redux/selectors/authSelectors';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 type TaskScreenProps = {
@@ -25,49 +26,25 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     nextDay.setDate(nextDay.getDate() + 3);
     var previousDay = new Date();
     previousDay.setDate(previousDay.getDate() - 9);
-    // const listTask = [{
-    //     title: "Landing page design",
-    //     owner: 'Alex Gi',
-    //     startTime: previousDay,
-    //     endTime: nextDay
-    // },{
-    //     title: "Landing page design",
-    //     owner: 'Alex Gi',
-    //     startTime: previousDay,
-    //     endTime: nextDay
-    // },{
-    //     title: "Landing page design",
-    //     owner: 'Alex Gi',
-    //     startTime: previousDay,
-    //     endTime: nextDay
-    // },{
-    //     title: "Landing page design",
-    //     owner: 'Alex Gi',
-    //     startTime: previousDay,
-    //     endTime: nextDay
-    // },{
-    //     title: "Landing page design",
-    //     owner: 'Alex Gi',
-    //     startTime: previousDay,
-    //     endTime: nextDay
-    // }]
     const accessToken = useSelector(tokenSelector);
-    const [listTask, setListTask] = useState([]);
-    useEffect(()=>{
-        getAllTasks({accessToken})
-            .then((res)=>{
-                setListTask(res.data);
-                console.log(res.data)
-            })
-            .catch((err)=>{
-                console.log("Get all tasks error: ", err);
-            });
-    }, [accessToken])
-
+    const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
+    const [create, setCreate] = useState(false);
+    useFocusEffect(
+        useCallback(()=>{
+            getAllTasks({accessToken})
+                .then((res)=>{
+                    setListTask(res.data);
+                    console.log(res.data)
+                })
+                .catch((err)=>{
+                    console.log("Get all tasks error: ", err);
+                });
+        }, [accessToken])
+    )
     return (
         <View style  ={{position: 'relative', flex:1}}>
             <OverlayBubbleAnimation/>
-            <View style = {{}}>
+            <View style = {{position: 'relative'}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'space-between',padding: AppPadding,  marginTop: 36}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Image source={{uri: 'https://avatars.githubusercontent.com/u/59484967?u=ce3a100108edb093ed79603c9c7f8447aa0bd067&v=4&size=80'}} style={{width: 50, height: 50, borderRadius: 50}}/>
@@ -87,13 +64,15 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         <Title title='Upcomming Tasks' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
                         <ScrollView style = {{padding: AppPadding, paddingTop: 0, flexDirection:'row', paddingRight: 0}} horizontal={true} showsHorizontalScrollIndicator={false}>
                             {
-                                // listTask.map((task, index: number)=>{
-                                //     return (
-                                //         <View key={Math.random()} style = {{marginRight: 12}}>
-                                //             <TaskBig title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
-                                //         </View>
-                                //     )
-                                // })
+                                listTask.map((task, index: number)=>{
+                                    console.log(typeof(task.startAt))
+                                    return (
+                                        !task.startAt &&
+                                        <View key={Math.random()} style = {{marginRight: 12}}>
+                                            <TaskBig title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                        </View>
+                                    )
+                                })
                             }
                         </ScrollView>
                     </View>
@@ -121,16 +100,27 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         </ScrollView>
                         <View style = {{padding: AppPadding, paddingTop: 0}}>
                             {
-                                // listTask.map((task, index: number)=>{
-                                //     return <View key={Math.random()} style={{paddingBottom: 12}}>
-                                //             <TaskSmall title={task.title} ownerName={task.owner} startTime={task.startTime} endTime={task.endTime} type={index%2===0}/>
-                                //         </View>
-                                // })
+                                listTask.map((task, index: number)=>{
+                                    return (
+                                        task.startAt &&
+                                        <View key={Math.random()} style={{paddingBottom: 12}}>
+                                            <TaskSmall title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                        </View>
+                                    )
+                                })
                             }
                         </View>
                     </View>
                     <Space space={100}/>
                 </ScrollView>
+                {
+                    create &&
+                    <View style={{backgroundColor: WhiteColor, flex: 1, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></View>
+                    
+                }
+                <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 100, backgroundColor: PrimaryColorBlue, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
+                    <Title size={40} color={WhiteColor} title='+' type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
+                </TouchableOpacity>
             </View>
         </View>
     );

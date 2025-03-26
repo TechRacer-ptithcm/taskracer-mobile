@@ -4,6 +4,7 @@ import { BackgroundColor, BlueSuperLight, GrayColor, PrimaryColorBlue, PrimaryCo
 import CircularProgress from "react-native-circular-progress-indicator";
 import ClockIcon from "../assets/icons/ClockIcon";
 import { Space } from "./Space";
+import LateIcon from "../assets/icons/LateIcon";
 
 type TaskSmallProps = {
     title: string,
@@ -48,15 +49,18 @@ export const TaskSmall = ({title, ownerName, startTime, endTime, type} : TaskSma
                 </View>
             </View>
             <View style={{}}>
-                <CircularProgress
-                    value={progressPercent}
-                    radius={20}
-                    activeStrokeColor={type ? PrimaryColorRed : PrimaryColorBlue}
-                    inActiveStrokeOpacity={0.3}
-                    progressValueColor={GrayColor}
-                    valueSuffix={'%'}
-                    progressValueStyle={{fontFamily: 'DynaPuff-Bold', fontWeight:'regular'}}
-                />
+                {
+                    progressPercent>0? 
+                    <CircularProgress
+                        value={progressPercent}
+                        radius={20}
+                        activeStrokeColor={type ? PrimaryColorRed : PrimaryColorBlue}
+                        inActiveStrokeOpacity={0.3}
+                        progressValueColor={GrayColor}
+                        valueSuffix={'%'}
+                        progressValueStyle={{fontFamily: 'DynaPuff-Bold', fontWeight:'regular'}}
+                    />: <LateIcon width={24} height={24} color ={GrayColor}/>
+                }
             </View>
         </View>
     )
