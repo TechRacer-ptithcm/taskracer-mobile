@@ -5,7 +5,10 @@ type CreateTaskParam = {
   type: string;
   content: string;
   priority: string;
+  description: string;
   status: string;
+  startAt: Date;
+  dueAt: Date;
 };
 
 type CreateTaskResponse = {
@@ -37,7 +40,10 @@ export const createTask = ({
   type,
   content,
   priority,
+  description,
   status,
+  startAt,
+  dueAt,
 }: CreateTaskParam) => {
   return axios
     .post<CreateTaskResponse>(
@@ -46,7 +52,10 @@ export const createTask = ({
         type,
         content,
         priority,
+        description,
         status,
+        startAt,
+        dueAt,
       },
       {
         headers: {

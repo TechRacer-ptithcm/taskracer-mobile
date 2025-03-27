@@ -4,7 +4,7 @@ import { TaskSmall } from '../components/TaskSmall';
 import { OverlayBubbleAnimation } from '../components/OverlayBubbleAnimation';
 import { AppPadding } from '../constants/spaces';
 import { Title } from '../components/Title';
-import { BackgroundColor, GrayColor, PrimaryColorBlue, WhiteColor } from '../assets/color';
+import { BackgroundColor, GrayColor, PrimaryColorBlue, PrimaryColorRed, WhiteColor } from '../assets/color';
 import { Space } from '../components/Space';
 import BellIcon from '../assets/icons/BellIcon';
 import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
@@ -12,6 +12,10 @@ import { getAllTasks, GetAllTasksData } from '../services/getAllTasks';
 import { useSelector } from 'react-redux';
 import { tokenSelector } from '../redux/selectors/authSelectors';
 import { useFocusEffect } from '@react-navigation/native';
+import { CreateNewTaskSection } from '../sections/CreateNewTaskSection';
+import { Input } from '../components/Input';
+import { InputNormal } from '../constants/strings';
+
 
 
 type TaskScreenProps = {
@@ -42,9 +46,13 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
         }, [accessToken])
     )
     return (
-        <View style  ={{position: 'relative', flex:1}}>
+        <View style  ={{position: 'relative', flex:1, bottom: 0, backgroundColor: 'blue', justifyContent: 'flex-end'}}>
+            {/* <View style ={{position: 'relative', backgroundColor: 'red', flex: 1}}>
+                <Text>ahihi</Text>
+                <Input value='' placeholder='' type={InputNormal} onChangeText={()=>{}}/>
+            </View> */}
             <OverlayBubbleAnimation/>
-            <View style = {{position: 'relative'}}>
+            <View style = {{position: 'relative', flex: 1}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'space-between',padding: AppPadding,  marginTop: 36}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
                         <Image source={{uri: 'https://avatars.githubusercontent.com/u/59484967?u=ce3a100108edb093ed79603c9c7f8447aa0bd067&v=4&size=80'}} style={{width: 50, height: 50, borderRadius: 50}}/>
@@ -61,11 +69,20 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                 <ScrollView scrollEnabled={true} style={{marginTop: -12}}>
                     <View style = {{paddingRight: 0}}>
                         <Space space={16}/>
-                        <Title title='Upcomming Tasks' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
+                        <Title title='Upcomming Todo' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
                         <ScrollView style = {{padding: AppPadding, paddingTop: 0, flexDirection:'row', paddingRight: 0}} horizontal={true} showsHorizontalScrollIndicator={false}>
                             {
                                 listTask.map((task, index: number)=>{
-                                    console.log(typeof(task.startAt))
+                                    return (
+                                        !task.startAt &&
+                                        <View key={Math.random()} style = {{marginRight: 12}}>
+                                            <TaskBig title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                        </View>
+                                    )
+                                })
+                            }
+                            {
+                                listTask.map((task, index: number)=>{
                                     return (
                                         !task.startAt &&
                                         <View key={Math.random()} style = {{marginRight: 12}}>
@@ -78,7 +95,7 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                     </View>
                     <View style = {{paddingRight: 0}}>
                         <Space space={16}/>
-                        <Title title='My Task List' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
+                        <Title title='My Tasks' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
                         <ScrollView horizontal={true} style = {{paddingLeft: AppPadding, paddingRight: AppPadding, paddingBottom: AppPadding/2}} showsHorizontalScrollIndicator={false}>
                             <TouchableOpacity style={{paddingLeft:16, paddingRight: 16, paddingTop:8, paddingBottom: 8, backgroundColor: PrimaryColorBlue, borderRadius: 12}}>
                                 <Title title='Today' size={16} color={WhiteColor} type={true} verticalPadding={0} horizontalPadding={0}/>
@@ -109,19 +126,31 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                                     )
                                 })
                             }
+                            {
+                                listTask.map((task, index: number)=>{
+                                    return (
+                                        task.startAt &&
+                                        <View key={Math.random()} style={{paddingBottom: 12}}>
+                                            <TaskSmall title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                     </View>
-                    <Space space={100}/>
                 </ScrollView>
-                {
-                    create &&
-                    <View style={{backgroundColor: WhiteColor, flex: 1, position: 'absolute', top: 0, bottom: 0, left: 0, right: 0}}></View>
-                    
-                }
-                <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 100, backgroundColor: PrimaryColorBlue, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
-                    <Title size={40} color={WhiteColor} title='+' type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
-                </TouchableOpacity>
+                
+                
             </View>
+            {
+                create &&
+                <CreateNewTaskSection openStatus={create} setOpenStatus = {setCreate}/>
+            
+            }
+            <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 10, backgroundColor: !create? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
+                <Title size={40} color={WhiteColor} title={!create?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
+            </TouchableOpacity>
+            
         </View>
     );
 
