@@ -49,7 +49,8 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
     const accessToken = useSelector(tokenSelector);
 
     const handleCreateAction = async ()=>{
-        return await createTask({accessToken, type: 'USER', content: title, priority: listPriority[priorityIndex], description, status: "TODO", startAt: startDate, dueAt: endDate})
+
+        return await createTask({accessToken, type: 'USER', content: title, priority: listPriority[priorityIndex], description, status: "TODO", startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
             .then(res=>{
                 console.log(res.data.content);
                 setOpenStatus(false);

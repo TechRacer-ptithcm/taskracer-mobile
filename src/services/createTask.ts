@@ -7,8 +7,8 @@ type CreateTaskParam = {
   priority: string;
   description: string;
   status: string;
-  startAt: Date;
-  dueAt: Date;
+  startAt: string;
+  dueAt: string;
 };
 
 type CreateTaskResponse = {
@@ -27,8 +27,8 @@ type CreateTaskData = {
   content: string;
   priority: string;
   description: string;
-  start_at: Date;
-  due_at: Date;
+  start_at: string;
+  due_at: string;
   status: string;
   created_at: Date;
   updated_at: Date;
@@ -45,6 +45,15 @@ export const createTask = ({
   startAt,
   dueAt,
 }: CreateTaskParam) => {
+  console.log({
+    type,
+    content,
+    priority,
+    description,
+    status,
+    startAt,
+    dueAt,
+  });
   return axios
     .post<CreateTaskResponse>(
       `${process.env.EXPO_PUBLIC_BASE_URL}/content/task`,

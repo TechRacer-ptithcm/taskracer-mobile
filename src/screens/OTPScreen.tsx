@@ -46,7 +46,7 @@ export const OTPScreen = ({route}: {route: OTPScreenRouteProp})=>{
                 verifyUser({otp: otpCode})
                     .then(res=>{
                         if (res && res.status){
-                            navigation.navigate(EditUserString);
+                            navigation.navigate(LoginString);
                         }
                     })
                     .catch(error=>{

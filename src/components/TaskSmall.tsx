@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Title } from "./Title";
 import { BackgroundColor, BlueSuperLight, GrayColor, PrimaryColorBlue, PrimaryColorRed, RedLight, RedSuperLight, WhiteColor } from "../assets/color";
 import CircularProgress from "react-native-circular-progress-indicator";
@@ -10,17 +10,20 @@ import RunningIcon from "../assets/icons/RunningIcon";
 type TaskSmallProps = {
     title: string,
     ownerName: string,
-    startTime: Date,
-    endTime: Date,
+    startTime: string,
+    endTime: string,
     type: boolean,
+    onClick?: () => void,
 }
 
-export const TaskSmall = ({title, ownerName, startTime, endTime, type} : TaskSmallProps)=>{
-    const duration = endTime.valueOf() - startTime.valueOf();
-    const progressPercent = ((new Date()).valueOf() - startTime.valueOf())*100/duration;
-    const remainHours = Math.round((endTime.valueOf() - (new Date()).valueOf())/3600000)
+export const TaskSmall = ({title, ownerName, startTime, endTime, type, onClick} : TaskSmallProps)=>{
+    const startAt = new Date(startTime).getTime() + 7 * 60 * 60 * 1000;
+    const endAt = new Date(endTime).getTime() + 7 * 60 * 60 * 1000;
+    const duration = endAt - startAt;
+    const progressPercent = ((new Date()).getTime() - startAt)*100/duration;
+    const remainHours = Math.round((endAt - (new Date()).getTime())/3600000)
     return (
-        <View style = {{flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: BackgroundColor, justifyContent: 'space-between', padding:12, borderRadius: 20}}>
+        <TouchableOpacity style = {{flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: BackgroundColor, justifyContent: 'space-between', padding:12, borderRadius: 20}} onPress={onClick}>
             <View style = {{flexDirection: 'row', alignItems: 'center', flex:1}}>
                 <View style = {{width: 60, height: 60, borderRadius:10, backgroundColor:type ? RedSuperLight : BlueSuperLight, padding: 8}}>
                     <View style = {{flexDirection: 'row', flex:1}}>
@@ -71,6 +74,6 @@ export const TaskSmall = ({title, ownerName, startTime, endTime, type} : TaskSma
                     <RunningIcon width={24} height={24} color ={GrayColor}/>
                 }
             </View>
-        </View>
+        </TouchableOpacity>
     )
 };

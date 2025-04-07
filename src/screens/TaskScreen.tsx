@@ -11,10 +11,13 @@ import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { getAllTasks, GetAllTasksData } from '../services/getAllTasks';
 import { useSelector } from 'react-redux';
 import { tokenSelector } from '../redux/selectors/authSelectors';
-import { useFocusEffect } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { CreateNewTaskSection } from '../sections/CreateNewTaskSection';
 import { Input } from '../components/Input';
 import { InputNormal } from '../constants/strings';
+import { TaskInfoSection } from '../sections/TaskInfoSection';
+import { Task } from '../models/Task';
+import { TaskInfoString, TaskStackString } from '../constants/screen';
 
 
 
@@ -30,15 +33,32 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     nextDay.setDate(nextDay.getDate() + 3);
     var previousDay = new Date();
     previousDay.setDate(previousDay.getDate() - 9);
+    const navigation = useNavigation();
     const accessToken = useSelector(tokenSelector);
     const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
+    const [listTodo, setListTodo] = useState<GetAllTasksData[]>([]);
     const [create, setCreate] = useState(false);
+    const [showTaskInfo, setShowTaskInfo] = useState(false);
+    function handleClickTask(taskId: string){
+        console.log(taskId)
+        navigation.navigate(TaskInfoString, {taskId: taskId});
+    }
     useFocusEffect(
         useCallback(()=>{
             getAllTasks({accessToken})
                 .then((res)=>{
-                    setListTask(res.data);
-                    console.log(res.data)
+                    const listTask: GetAllTasksData[]=[];
+                    const listTodo: GetAllTasksData[] =[];
+                    res.data.forEach((task: GetAllTasksData)=>{
+                        if(task.startAt){
+                            listTask.push(task);
+                        }
+                        else {
+                            listTodo.push(task);
+                        }
+                    });
+                    setListTask(listTask);
+                    setListTodo(listTodo);
                 })
                 .catch((err)=>{
                     console.log("Get all tasks error: ", err);
@@ -72,21 +92,10 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         <Title title='Upcomming Todo' size={20} color={GrayColor} type={true} horizontalPadding={AppPadding} verticalPadding={12}/>
                         <ScrollView style = {{padding: AppPadding, paddingTop: 0, flexDirection:'row', paddingRight: 0}} horizontal={true} showsHorizontalScrollIndicator={false}>
                             {
-                                listTask.map((task, index: number)=>{
+                                listTodo.map((task, index: number)=>{
                                     return (
-                                        !task.startAt &&
                                         <View key={Math.random()} style = {{marginRight: 12}}>
-                                            <TaskBig title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
-                                        </View>
-                                    )
-                                })
-                            }
-                            {
-                                listTask.map((task, index: number)=>{
-                                    return (
-                                        !task.startAt &&
-                                        <View key={Math.random()} style = {{marginRight: 12}}>
-                                            <TaskBig title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                            <TaskBig title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0} onClick={() => {handleClickTask(task.id)}}/>
                                         </View>
                                     )
                                 })
@@ -119,19 +128,8 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                             {
                                 listTask.map((task, index: number)=>{
                                     return (
-                                        task.startAt &&
                                         <View key={Math.random()} style={{paddingBottom: 12}}>
-                                            <TaskSmall title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
-                                        </View>
-                                    )
-                                })
-                            }
-                            {
-                                listTask.map((task, index: number)=>{
-                                    return (
-                                        task.startAt &&
-                                        <View key={Math.random()} style={{paddingBottom: 12}}>
-                                            <TaskSmall title={task.content} ownerName={task.owner} startTime={new Date(task.startAt)} endTime={new Date(task.dueAt)} type={index%2===0}/>
+                                            <TaskSmall title={task.content} ownerName={task.owner} startTime={task.startAt} endTime={task.dueAt} type={index%2===0} onClick={() => handleClickTask(task.id)}/>
                                         </View>
                                     )
                                 })
@@ -139,13 +137,10 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                         </View>
                     </View>
                 </ScrollView>
-                
-                
             </View>
             {
                 create &&
                 <CreateNewTaskSection openStatus={create} setOpenStatus = {setCreate}/>
-            
             }
             <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 10, backgroundColor: !create? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
                 <Title size={40} color={WhiteColor} title={!create?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
@@ -153,5 +148,4 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
             
         </View>
     );
-
 };

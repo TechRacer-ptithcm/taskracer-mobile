@@ -10,3 +10,5 @@ export const AuthStackString: string = "auth";
 export const MainStackString: string = "main";
 export const ChangePassString: string = "change_pass";
 export const EditUserString: string = "edit_user";
+export const TaskInfoString: string = "task_info";
+export const TaskStackString: string = "task_stack";

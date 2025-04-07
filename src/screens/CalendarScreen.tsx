@@ -12,66 +12,42 @@ import { useSafeAreaFrame } from 'react-native-safe-area-context';
 import { setPomoMode } from '../redux/slices/appSlice';
 import { DateComponent } from '../components/Date';
 import { dayString } from '../constants/strings';
+import { useFocusEffect } from '@react-navigation/native';
+import { getAllTasks, GetAllTasksData } from '../services/getAllTasks';
+import { useSelector } from 'react-redux';
+import { tokenSelector } from '../redux/selectors/authSelectors';
 
 const {height} = Dimensions.get('window')
 export const CalendarScreen = () => {
+    const accessToken = useSelector(tokenSelector);
+    useFocusEffect(
+            useCallback(()=>{
+                getAllTasks({accessToken})
+                    .then((res)=>{
+                        const listTask=[];
+                        res.data.forEach((task: GetAllTasksData)=>{
+                            if(task.startAt){
+                                const start = new Date(task.startAt).getTime() + 7 * 60 * 60 * 1000;
+                                const due = new Date(task.dueAt).getTime() + 7 * 60 * 60 * 1000;
+                                listTask.push({
+                                    id: task.id,
+                                    title: task.content,
+                                    start: new Date(start),
+                                    end: new Date(due),
+                                    color: GreenColor
+                                });
+                            }
+                            
+                        });
+                        setEvents(listTask);
+                    })
+                    .catch((err)=>{
+                        console.log("Get all tasks error: ", err);
+                    });
+            }, [accessToken])
+        )
     const [events, setEvents] = useState([
-
-        {
-            id: UUID.v4(),
-            title: 'Meeting1',
-            start: new Date(2025, 2, 11, 11, 1),
-            end: new Date(2025, 2, 11, 13, 30),
-            color: GrayColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting5',
-            start: new Date(2025, 2, 11, 11, 2),
-            end: new Date(2025, 2, 11, 15, 3),
-            color: GreenColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting5',
-            start: new Date(2025, 2, 11, 11, 3),
-            end: new Date(2025, 2, 11, 15, 3),
-            color: GreenColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting5',
-            start: new Date(2025, 2, 11, 11, 4),
-            end: new Date(2025, 2, 11, 15, 3),
-            color: GreenColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting5',
-            start: new Date(2025, 2, 11, 15, 4),
-            end: new Date(2025, 2, 11, 18, 3),
-            color: GreenColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting5',
-            start: new Date(2025, 2, 11, 15, 4),
-            end: new Date(2025, 2, 11, 18, 3),
-            color: GreenColor
-        },
-        {
-            id: UUID.v4(),
-
-            title: 'Meeting8: Planning new Things for this company next year',
-            start: new Date(2025, 2, 11, 16, 3),
-            end: new Date(2025, 2, 11, 20, 3),
-            color: GreenColor
-        },
+        
     ])
     const [listDate, setListDate] = useState([new Date()])
     useLayoutEffect(()=>{
@@ -122,7 +98,7 @@ export const CalendarScreen = () => {
             }}
         >
             <OverlayBubbleAnimation/>
-            <View style = {{width: 500, height: 100, justifyContent: 'center'}}>
+            <View style = {{height: 100, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
                 <View style = {{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
                     <View style = {{marginTop: 6}}>
                         <Title color='#000' size={60} title={(new Date()).getDate().toString()} type={true} horizontalPadding={0} verticalPadding={0}/>
@@ -131,6 +107,32 @@ export const CalendarScreen = () => {
                         <Title color='#000' size={12} title={dayString[(new Date()).getDay()]} type={true} horizontalPadding={0} verticalPadding={0}/>
                         <Title color='#000' size={12} title={((new Date()).getMonth()+1).toString() + '/' + (new Date()).getFullYear().toString()} type={true} horizontalPadding={0} verticalPadding={0}/>
                     </View>
+                </View>
+                <View style ={{borderRadius: 20, justifyContent: 'center', alignItems: 'center', flexDirection: 'row'}}>
+                    <TouchableOpacity onPress={()=>{
+                        setCalendarMode('day')
+                    }}
+                        style = {{padding: 12, backgroundColor: calendarMode === 'day' ? PrimaryColorRed : BackgroundColor, borderRadius: 20, marginRight: 12}}>
+                        <Title title="Day" color={calendarMode === 'day' ? WhiteColor : GrayColor} size={10} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{
+                        setCalendarMode('3days')
+                    }}
+                        style = {{padding: 12, backgroundColor: calendarMode === '3days' ? PrimaryColorRed : BackgroundColor, borderRadius: 20, marginRight: 12}}>
+                        <Title title="3 Day" color={calendarMode === '3days' ? WhiteColor : GrayColor} size={10} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{
+                        setCalendarMode('week')
+                    }}
+                        style = {{padding: 12, backgroundColor: calendarMode === 'week' ? PrimaryColorRed : BackgroundColor, borderRadius: 20, marginRight: 12}}>
+                        <Title title="Week" color={calendarMode === 'week' ? WhiteColor : GrayColor} size={10} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={()=>{
+                        setCalendarMode('month')
+                    }}
+                        style = {{padding: 12, backgroundColor: calendarMode === 'month' ? PrimaryColorRed : BackgroundColor, borderRadius: 20, marginRight: 12}}>
+                        <Title title="Month" color={calendarMode === 'month' ? WhiteColor : GrayColor} size={10} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    </TouchableOpacity>
                 </View>
             </View>
             <Calendar 
@@ -167,7 +169,6 @@ export const CalendarScreen = () => {
                                         setInitialScrollCalendarView(index);
                                     }}/>
                                 )
-                            
                             }}
                         />
                     )
@@ -178,7 +179,7 @@ export const CalendarScreen = () => {
                         return (
                             <TouchableOpacity {...eventProps} onPress={()=>{
                             }} key={UUID.v4()}>
-                                <View style ={{flexDirection: 'row', justifyContent: 'center', flex: 1, alignItems: 'center', backgroundColor: event.color, borderRadius: 10, position: 'relative', borderWidth: 1, borderColor: WhiteColor}}>
+                                <View style ={{flexDirection: 'row', justifyContent: 'flex-start', flex: 1, alignItems: 'flex-start', paddingLeft: 14, paddingTop: 5, backgroundColor: event.color, borderRadius: 10, position: 'relative', borderWidth: 1, borderColor: WhiteColor}}>
                                     <View style = {{height: 10, width: 10, backgroundColor: '#fff', opacity: 0.1, borderRadius: 20, position: 'absolute', top: 5, left: 5}}/>
                                     <Title title={event.title} color={WhiteColor} size={8} type={true} horizontalPadding={6} verticalPadding={0}/>
                                 </View>

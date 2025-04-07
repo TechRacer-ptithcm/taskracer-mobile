@@ -1,37 +1,28 @@
 import axios from "axios";
+import { Task } from "react-native";
 
 type GetTaskByIdParam = {
   id: string;
+  accessToken: string;
 };
 
 type GetTaskByIdResponse = {
   message: string;
   code: string;
   status: boolean;
-  data: GetTaskByIdData;
+  data: Task;
 };
 
-type GetTaskByIdData = {
-  id: string;
-  parent_id: string;
-  resource_type: string;
-  resource_id: string;
-  owner: string;
-  content: string;
-  priority: string;
-  description: string;
-  start_at: Date;
-  due_at: Date;
-  status: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date;
-};
-
-export const getTaskById = ({ id }: GetTaskByIdParam) => {
+export const getTaskById = ({ id, accessToken }: GetTaskByIdParam) => {
   return axios
     .get<GetTaskByIdResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task/${id}`
+      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task?taskId=${id}`,
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }
     )
     .then((res) => {
       return res.data;

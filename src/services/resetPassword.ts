@@ -17,7 +17,7 @@ type ResetPassParams = {
 export const resetPass = async ({ token, new_password }: ResetPassParams) => {
   return axios
     .post(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/auth/change-password`,
+      `${process.env.EXPO_PUBLIC_BASE_URL}/auth/reset-password`,
       { token: token, "new-password": new_password },
       { headers: { "Content-Type": "application/json" } }
     )
