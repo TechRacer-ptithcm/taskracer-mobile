@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from "react"
 import { Animated, Easing, Text, TouchableOpacity, useAnimatedValue, View } from "react-native"
 import { BackgroundColor, BubbleColor, GrayColor, GreenColor, PrimaryColorBlue, PrimaryColorRed, RedLight, WarningColor, WhiteColor } from "../assets/color"
-import CloseIcon from "../assets/icons/CloseIcon"
 import { Title } from "../components/Title"
 import { Input } from "../components/Input"
-import { InputNormal } from "../constants/strings"
+import { InputNormal, listPriority, Priorities } from "../constants/strings"
 import CalendarColourIcon from "../assets/icons/CalendarColourIcon"
 import ClockSolid from "../assets/icons/ClockSolid"
 import { Space } from "../components/Space"
 import { MultipleLinesInput } from "../components/MultipleLineInput"
 import { AvataBaseWord } from "../components/AvataBaseWord"
-import DateTimePicker from '@react-native-community/datetimepicker';
 import { Button } from "../components/Button"
 import { InputAndButtonSubmit } from "./InputAndButtonSubmit"
 import { ScrollView } from "react-native-gesture-handler"
@@ -20,6 +18,7 @@ import { ListPriority } from "./ListPriority"
 import { createTask } from "../services/createTask"
 import { useSelector } from "react-redux"
 import { tokenSelector } from "../redux/selectors/authSelectors"
+import { ClockSetTime } from "../components/ClockSetTime"
 
 
 
@@ -42,15 +41,12 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
     const [showAssign, setShowAssign] = useState(false);
     const [showPriority, setShowPriority] = useState(false);
 
-    const listPriority: EnumPriority[] = ["HIGH", 'LOW', 'MEDIUM'];
-    const listBackgroundColor = [RedLight, PrimaryColorBlue, GreenColor]
-    const listBorderColor = [PrimaryColorRed, WhiteColor, WhiteColor]
-    const [priorityIndex, setPriorityIndex] = useState(0);
+    const [priority, setPriority] = useState<'LOW'|'MEDIUM'|'HIGH'>('MEDIUM');
     const accessToken = useSelector(tokenSelector);
 
     const handleCreateAction = async ()=>{
 
-        return await createTask({accessToken, type: 'USER', content: title, priority: listPriority[priorityIndex], description, status: "TODO", startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
+        return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: "TODO", startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
             .then(res=>{
                 console.log(res.data.content);
                 setOpenStatus(false);
@@ -59,16 +55,6 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                 console.log("Create task error with message:", error);
                 setOpenStatus(false);
             })
-    }
-
-    const onDateSet = (event:any, selectedDate:any)=>{
-        if (clockMode === 'date' && selectedDate){
-            timeMode === 'start'? setStartDate(selectedDate) : setEndDate(selectedDate);
-            setClockMode('time');
-        } else{
-            timeMode === 'start'? setStartDate(selectedDate) : setEndDate(selectedDate);
-            setOpen(false);
-        }
     }
     useEffect(()=>{
             Animated.timing(
@@ -109,51 +95,68 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                     <Input type={InputNormal} placeholder="Task title" value={title} onChangeText={setTitle}/>
                     <MultipleLinesInput placeholder="Task Description" onChangeText={setDescription} value={description}/>
                     <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
-                        <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6}}>
+                        <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
                             <CalendarColourIcon width={24} height={24} color={PrimaryColorRed}/>
-                        </View>
-                        <TouchableOpacity style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}} onPress={()=>{
-                            setOpen(true);
-                            setClockMode('date');
-                            setTimeMode('start');
-                        }}>
-                            <Title title='Start At: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-                            <Title title={`${startDate.getDate()}/${startDate.getMonth()+1}/${startDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
                             <Space space={12}/>
-                            <Title title={`${startDate.getHours()<10? '0'+ startDate.getHours().toString() : startDate.getHours()}:${startDate.getMinutes()<10? '0'+ startDate.getMinutes().toString() : startDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                            <Title title='Start At: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
 
-                        </TouchableOpacity>
+                        </View>
+                        <View style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
 
+                            <TouchableOpacity style = {{}} onPress={()=>{
+                                setOpen(true);
+                                setClockMode('date');
+                                setTimeMode('start');
+                            }}>
+                                <Title title={`${startDate.getDate()}/${startDate.getMonth()+1}/${startDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
 
+                            </TouchableOpacity>
+                            <Space space={12}/>
+                            <TouchableOpacity style = {{}} onPress={()=>{
+                                setOpen(true);
+                                setClockMode('time');
+                                setTimeMode('start');
+                            }}>
+                                <Title title={`${startDate.getHours()<10? '0'+ startDate.getHours().toString() : startDate.getHours()}:${startDate.getMinutes()<10? '0'+ startDate.getMinutes().toString() : startDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                            </TouchableOpacity>
+                            
+                        </View>
                     </View>
                     <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
-                        <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6}}>
+                        <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
                             <ClockSolid width={24} height={24} color={GreenColor}/>
-                        </View>
-                        <TouchableOpacity style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}} onPress={()=>{
-                            setOpen(true);
-                            setClockMode('date');
-
-                            setTimeMode("end");
-                        }}>
-                            <Title title='Due To: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-                            <Title title={`${endDate.getDate()}/${endDate.getMonth()+1}/${endDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
                             <Space space={12}/>
-                            <Title title={`${endDate.getHours()<10? '0'+ endDate.getHours().toString() : endDate.getHours()}:${endDate.getMinutes()<10? '0'+ endDate.getMinutes().toString() : endDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-                        </TouchableOpacity>
+                            <Title title='Due To: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
 
-
+                        </View>
+                        <View style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+                            <TouchableOpacity style = {{}} onPress={()=>{
+                                setOpen(true);
+                                setClockMode('date');
+                                setTimeMode("end");
+                            }}>
+                                <Title title={`${endDate.getDate()}/${endDate.getMonth()+1}/${endDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                            </TouchableOpacity>
+                            <Space space={12}/>
+                            <TouchableOpacity onPress={()=>{
+                                setOpen(true);
+                                setClockMode('time');
+                                setTimeMode("end");
+                            }}>
+                                <Title title={`${endDate.getHours()<10? '0'+ endDate.getHours().toString() : endDate.getHours()}:${endDate.getMinutes()<10? '0'+ endDate.getMinutes().toString() : endDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>
                         <Title title='Priority: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
                         <TouchableOpacity style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end'}} onPress={()=>{
                             setShowPriority(!showPriority);
                         }}>
-                            <Priority content={listPriority[priorityIndex]} backgroundColor={listBackgroundColor[priorityIndex]} borderColor={listBorderColor[priorityIndex]}/>
+                            <Priority content={priority} backgroundColor={Priorities[priority].color} borderColor={Priorities[priority].borderColor}/>
                         </TouchableOpacity>
                         {
                             showPriority &&
-                            <ListPriority setPriority={setPriorityIndex} list={listPriority} listBackgroundColor={listBackgroundColor} listBorderColor={listBorderColor}/>
+                            <ListPriority setPriority={setPriority}/>
                         }
                     </View>
                     <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>
@@ -179,20 +182,18 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                             <InputAndButtonSubmit placeholder="Your coworker email" valueInput={assignFrValue} onValueChange={setAssignFrValue} onSubmit={()=>{}}/>
                         }
                     </View>
-                    
                     <Space space={60}/>
                 </View>
                 <Space space={100}/>
             </ScrollView>
             {
                 open &&
-                <DateTimePicker
-                    testID="dateTimePicker"
-                    mode={clockMode}
-                    value={timeMode==='start' ? startDate : endDate}
-                    is24Hour={true}
-                    onChange={onDateSet}
-                />
+                <ClockSetTime 
+                    time={timeMode === 'start'? startDate : endDate} 
+                    setTime={timeMode === 'start'? setStartDate : setEndDate} 
+                    mode={clockMode} 
+                    setShow={setOpen}
+                /> 
             }
         </Animated.View>
     )

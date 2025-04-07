@@ -15,9 +15,12 @@ import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { CreateNewTaskSection } from '../sections/CreateNewTaskSection';
 import { Input } from '../components/Input';
 import { InputNormal } from '../constants/strings';
-import { TaskInfoSection } from '../sections/TaskInfoSection';
 import { Task } from '../models/Task';
 import { TaskInfoString, TaskStackString } from '../constants/screen';
+import { useAppDispatch } from '../redux/hooks';
+import { setLoading } from '../redux/slices/appSlice';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { AppStackParamList } from '../navigation/AppNavigation';
 
 
 
@@ -33,18 +36,19 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     nextDay.setDate(nextDay.getDate() + 3);
     var previousDay = new Date();
     previousDay.setDate(previousDay.getDate() - 9);
-    const navigation = useNavigation();
+    const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
     const accessToken = useSelector(tokenSelector);
     const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
     const [listTodo, setListTodo] = useState<GetAllTasksData[]>([]);
     const [create, setCreate] = useState(false);
     const [showTaskInfo, setShowTaskInfo] = useState(false);
+    const dispatch = useAppDispatch();
     function handleClickTask(taskId: string){
-        console.log(taskId)
         navigation.navigate(TaskInfoString, {taskId: taskId});
     }
     useFocusEffect(
         useCallback(()=>{
+            dispatch(setLoading(true));
             getAllTasks({accessToken})
                 .then((res)=>{
                     const listTask: GetAllTasksData[]=[];
@@ -62,7 +66,10 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                 })
                 .catch((err)=>{
                     console.log("Get all tasks error: ", err);
-                });
+                })
+                .finally(()=>{
+                    dispatch(setLoading(false));
+                })
         }, [accessToken])
     )
     return (
@@ -145,7 +152,6 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
             <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 10, backgroundColor: !create? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
                 <Title size={40} color={WhiteColor} title={!create?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
             </TouchableOpacity>
-            
         </View>
     );
 };

@@ -8,7 +8,7 @@ export interface Task {
   priority: "HIGH" | "MEDIUM" | "LOW";
   resourceId: string;
   startAt: string;
-  status: string;
-  type: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+  status: "OPEN" | "IN_PROGRESS" | "DONE" | "CANCELLED";
+  type: "USER" | "TEAM";
   users: string[] | null;
 }
