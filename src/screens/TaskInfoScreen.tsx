@@ -1,9 +1,9 @@
-import { Text, TouchableOpacity, View } from "react-native"
+import { Alert, Text, TouchableOpacity, View } from "react-native"
 import { Task } from "../models/Task"
 import { Title } from "../components/Title"
 import { Space } from "../components/Space"
 import { BackgroundColor, GrayColor, GreenColor, PrimaryColorBlue, PrimaryColorRed, WhiteColor } from "../assets/color"
-import { ParamListBase, RouteProp } from "@react-navigation/native"
+import { ParamListBase, RouteProp, useNavigation } from "@react-navigation/native"
 import { OverlayBubbleAnimation } from "../components/OverlayBubbleAnimation"
 import { AppPadding } from "../constants/spaces"
 import BackIcon from "../assets/icons/BackIcon"
@@ -26,6 +26,9 @@ import { ClockSetTime } from "../components/ClockSetTime"
 import { Input } from "../components/Input"
 import { ListPriority } from "../sections/ListPriority"
 import { Priorities } from "../constants/strings"
+import { ListStatus } from "../sections/ListStatus"
+import { updateTask } from "../services/updateTask"
+import { NativeStackNavigationProp } from "@react-navigation/native-stack"
 
 
 export type TaskInfoScreenParams = {
@@ -36,6 +39,14 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
     console.log(route.params)
     const taskId = route.params?.taskId;
     const accessToken = useSelector(tokenSelector);
+    const [originalTaskValue, setOriginalTaskValue] = useState({
+        content: '',
+        startTime: 0,
+        deadline: 0,
+        status: 'TODO',
+        priority: 'LOW',
+        description: "",
+    })
     const [task, setTask] = useState<Task|undefined>(undefined);
     const [taskProgress, setTaskProgress] = useState<number>(0);
     const [openClock, setOpenClock] = useState<boolean>(false);
@@ -46,12 +57,27 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
     const [title, setTitle] = useState<string>("")
     const [editedTitleMode, setEdittedTitleMode] = useState<boolean>(false);
     const [openExtendStatus, setOpenExtendStatus] = useState<boolean>(false);
-    const [status, setStatus] = useState<string>("");
+    const [status, setStatus] = useState<'TODO'|'IN_PROGRESS'|'DONE'|'CANCELED'|'IN_REVIEW'|'PENDING'|'IN_TESTING'>("TODO");
     const [openExtendPriority, setOpenExtendPriority] = useState<boolean>(false);
     const [priority, setPriority] = useState<'LOW'|'MEDIUM'|'HIGH'>('LOW');
+    const [isUpdate, setIsUpdate] = useState<boolean>(false);
+    const [description, setDescription] = useState<string>("");
+    const [isUpdateDescription, setIsUpdateDescription] = useState<boolean>(false);
+    const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
     const dispatch = useAppDispatch();
+    const handleClickUpdate = useCallback(()=>{
+        updateTask({id: taskId?taskId:"", accessToken: accessToken, type: task?.type?task.type:"", content: title, priority, description, status, startAt: startTime.toISOString(), dueAt: dueTime.toISOString()})  
+            .then(res=>{   
+                Alert.alert("Update task successfully!!")
+                setIsUpdate(false)
+                navigation.goBack()
+            })
+            .catch(err=>{
+                console.log('Update task error with message:', err);
+            })
+    }, [task, title, startTime, dueTime, priority, status, description])
     useEffect(()=>{
-        dispatch(setLoading(true));
+        dispatch(setLoading(true))
         getTaskById({id: taskId, accessToken:accessToken}).then((res)=>{
             let task:Task = res.data
             setTask(task);
@@ -63,13 +89,37 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
             setTitle(task.content);
             setStatus(task.status);
             setPriority(task.priority)
+            setDescription(task.description)
+            setOriginalTaskValue({
+                content: task.content,
+                startTime: startAt,
+                deadline: dueAt,
+                status: task.status,
+                priority: task.priority,
+                description: task.description,
+            })
         }).catch((err)=>{
             console.log(err);
         }).finally(()=>{
             dispatch(setLoading(false));
         })
     }, [])
-
+    useEffect(()=>{
+        console.log(originalTaskValue)
+        if (
+            originalTaskValue.content!=title ||
+            originalTaskValue.deadline!=dueTime.getTime() ||
+            originalTaskValue.startTime!=startTime.getTime() ||
+            originalTaskValue.status!=status ||
+            originalTaskValue.priority!=priority ||
+            originalTaskValue.description!=description
+        ){
+            console.log(originalTaskValue.content!=title, originalTaskValue.deadline!=dueTime.getTime(), originalTaskValue.startTime!=startTime.getTime(), originalTaskValue.status!=status, originalTaskValue.priority!=priority, originalTaskValue.description!=description)
+            setIsUpdate(true);
+        } else {
+            setIsUpdate(false);
+        }
+    }, [title, startTime, dueTime, priority, status, description])
     return (
         <View style = {{flex: 1, backgroundColor: WhiteColor, position: 'relative', paddingTop: AppPadding*3, paddingLeft: AppPadding, paddingRight: AppPadding}}>  
             <OverlayBubbleAnimation/>
@@ -174,11 +224,13 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     <View style = {{flexDirection: 'row', alignItems: 'center'}}>
                         <Title title={"Status"} size={14} color={GrayColor} type={false} horizontalPadding={0} verticalPadding={0}/>
                         <Space space={8}/>
-                        <TouchableOpacity onPress={()=>{}} style = {{padding: 8, borderRadius: 24, backgroundColor: PrimaryColorBlue, position:'relative'}}>
+                        <TouchableOpacity onPress={()=>{setOpenExtendStatus(!openExtendStatus)}} style = {{padding: 8, borderRadius: 24, backgroundColor: PrimaryColorBlue, position:'relative'}}>
                             <Title title={status || ""} size={14} color={WhiteColor} type={false} horizontalPadding={0} verticalPadding={0}/>
                             {
-                                // openExtendStatus &&
-
+                                openExtendStatus &&
+                                <View style = {{position: 'absolute', top: -114, left: 0}}>
+                                    <ListStatus setStatus={setStatus}/>
+                                </View>
                             }
                         </TouchableOpacity>
                     </View>
@@ -190,7 +242,9 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                             <Title title={priority || ""} size={14} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                             {
                                 openExtendPriority && 
-                                <ListPriority setPriority={setPriority}/>
+                                <View style = {{position: 'absolute', top: -70, left: 0}}>
+                                    <ListPriority setPriority={setPriority}/>
+                                </View>
                             }
                         </TouchableOpacity>
                     </View>
@@ -198,7 +252,23 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                 <View style = {{backgroundColor: BackgroundColor, borderRadius: 20, padding: AppPadding, marginTop: AppPadding/2}}>
                     <Title title={"Description"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <Space space={8}/>
-                    <Title title={task?.description || ""} size={14} color={GrayColor} type={false} horizontalPadding={0} verticalPadding={0}/>
+                    <View style ={{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
+                        {
+                            isUpdateDescription?
+                            <TextInput value={description} onChangeText={(value)=>{setDescription(value)}} style = {{borderBottomWidth: 2, borderColor: GrayColor, flex: 1}}/>:
+                            
+                            <Title title={description || ""} size={14} color={GrayColor} type={false} horizontalPadding={0} verticalPadding={0}/>
+                        }
+                        {
+                            !isUpdateDescription?
+                            <TouchableOpacity onPress={()=>{setIsUpdateDescription(true)}}>
+                                <EditIcon width={30} height ={30} color ={GrayColor}/>
+                            </TouchableOpacity>:
+                            <TouchableOpacity onPress={()=>{setIsUpdateDescription(false)}} style ={{backgroundColor: PrimaryColorBlue, padding: 12, borderRadius: 24, paddingTop: 12, paddingBottom: 12}}>
+                                <Title title={"Done"} size={12} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={0}/>
+                            </TouchableOpacity>
+                        }
+                    </View>
                     <Space space={24}/>
                     <Title title={"Assignee"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <Space space={8}/>
@@ -210,8 +280,6 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                                 <Title title={"Alex Gi"} size={12} color={GrayColor} type={false} horizontalPadding={0} verticalPadding={0}/>
                             </View>
                             <Space space={12}/>
-                            
-                            
                         </ScrollView>
                     </View>
                     <Space space={24}/>
@@ -250,6 +318,14 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     mode={clockMode}
                     setShow={setOpenClock}
                 />
+            }
+            {
+                isUpdate &&
+                <View style = {{position: 'absolute', bottom: 60, backgroundColor: PrimaryColorBlue, padding: 12, borderRadius: 32, alignSelf: 'center', elevation: 4}}>
+                    <TouchableOpacity onPress={handleClickUpdate}>
+                        <Title title={"Update"} size={18} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    </TouchableOpacity>
+                </View>
             }
         </View>
     )

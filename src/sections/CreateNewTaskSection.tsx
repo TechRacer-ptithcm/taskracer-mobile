@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react"
-import { Animated, Easing, Text, TouchableOpacity, useAnimatedValue, View } from "react-native"
+import { Alert, Animated, Easing, Text, TouchableOpacity, useAnimatedValue, View } from "react-native"
 import { BackgroundColor, BubbleColor, GrayColor, GreenColor, PrimaryColorBlue, PrimaryColorRed, RedLight, WarningColor, WhiteColor } from "../assets/color"
 import { Title } from "../components/Title"
 import { Input } from "../components/Input"
-import { InputNormal, listPriority, Priorities } from "../constants/strings"
+import { InputNormal, listPriority, Priorities, Statuses } from "../constants/strings"
 import CalendarColourIcon from "../assets/icons/CalendarColourIcon"
 import ClockSolid from "../assets/icons/ClockSolid"
 import { Space } from "../components/Space"
@@ -19,6 +19,8 @@ import { createTask } from "../services/createTask"
 import { useSelector } from "react-redux"
 import { tokenSelector } from "../redux/selectors/authSelectors"
 import { ClockSetTime } from "../components/ClockSetTime"
+import { ListStatus } from "./ListStatus"
+import { Status } from "../components/Status"
 
 
 
@@ -40,21 +42,29 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
     const [assignFrValue, setAssignFrValue] = useState('');
     const [showAssign, setShowAssign] = useState(false);
     const [showPriority, setShowPriority] = useState(false);
-
     const [priority, setPriority] = useState<'LOW'|'MEDIUM'|'HIGH'>('MEDIUM');
+    const [showStatus, setShowStatus] = useState<boolean>(false);
+    const [status, setStatus] = useState<'TODO'|'IN_PROGRESS'|'DONE'|'CANCELED'|'IN_REVIEW'|'PENDING'|'IN_TESTING'>('TODO');
     const accessToken = useSelector(tokenSelector);
 
     const handleCreateAction = async ()=>{
-
-        return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: "TODO", startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
-            .then(res=>{
-                console.log(res.data.content);
-                setOpenStatus(false);
-            })
-            .catch(error=>{
-                console.log("Create task error with message:", error);
-                setOpenStatus(false);
-            })
+        if (startDate>=endDate){
+            Alert.alert("Start time cannot higher than or equal to due time");
+        } else if ( title=="") {
+            Alert.alert("Title cannot be blank");
+        } else if (description==""){
+            Alert.alert("Description cannot be blank");
+        } else{
+            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
+                .then(res=>{
+                    console.log(res.data.content);
+                    setOpenStatus(false);
+                })
+                .catch(error=>{
+                    console.log("Create task error with message:", error);
+                    setOpenStatus(false);
+                })
+        }
     }
     useEffect(()=>{
             Animated.timing(
@@ -86,7 +96,6 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
             paddingBottom: 0,
         }}>
             <ScrollView showsVerticalScrollIndicator={false}>
-
                 <View style = {{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Title title="New Task" color={GrayColor} size={36} type={true} horizontalPadding={0} verticalPadding={24} center={false}/>
                     <Button title="Create" color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{handleCreateAction()}}/>
@@ -127,7 +136,6 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                             <ClockSolid width={24} height={24} color={GreenColor}/>
                             <Space space={12}/>
                             <Title title='Due To: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-
                         </View>
                         <View style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
                             <TouchableOpacity style = {{}} onPress={()=>{
@@ -156,7 +164,23 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                         </TouchableOpacity>
                         {
                             showPriority &&
-                            <ListPriority setPriority={setPriority}/>
+                            <View style = {{position: 'absolute', top: -70, right: 0}}>
+                                <ListPriority setPriority={setPriority}/>
+                            </View>
+                        }
+                    </View>
+                    <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>
+                        <Title title='Status: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                        <TouchableOpacity style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end'}} onPress={()=>{
+                            setShowStatus(!showStatus);
+                        }}>
+                            <Status content={status} backgroundColor={Statuses[status].color} borderColor={Statuses[status].borderColor}/>
+                        </TouchableOpacity>
+                        {
+                            showStatus &&
+                            <View style = {{position: 'absolute', top: -114, right: 0}}>
+                                <ListStatus setStatus={setStatus}/>
+                            </View>
                         }
                     </View>
                     <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>

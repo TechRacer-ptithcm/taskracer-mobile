@@ -12,7 +12,7 @@ type ListPriorityParams = {
 export const ListPriority = ({setPriority}: ListPriorityParams)=>{
     
     return (
-        <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', elevation: 5, position: 'absolute', top: -70, left: 0, padding: 12, borderRadius: 12, backgroundColor: BackgroundColor, width: 180}}>
+        <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', elevation: 5, padding: 12, borderRadius: 12, backgroundColor: BackgroundColor, width: 180}}>
             <TouchableOpacity onPress={()=>{setPriority('LOW')}}>
                 <Priority content={"LOW"} backgroundColor={Priorities['LOW'].color} borderColor={Priorities['LOW'].borderColor}/>
             </TouchableOpacity>

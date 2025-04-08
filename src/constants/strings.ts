@@ -1,4 +1,5 @@
 import {
+  GrayColor,
   GreenColor,
   PrimaryColorBlue,
   PrimaryColorRed,
@@ -25,6 +26,36 @@ export const Priorities = {
   },
   MEDIUM: {
     color: GreenColor,
+    borderColor: WhiteColor,
+  },
+};
+export const Statuses = {
+  TODO: {
+    color: PrimaryColorRed,
+    borderColor: PrimaryColorRed,
+  },
+  IN_PROGRESS: {
+    color: PrimaryColorBlue,
+    borderColor: WhiteColor,
+  },
+  DONE: {
+    color: GreenColor,
+    borderColor: WhiteColor,
+  },
+  CANCELED: {
+    color: GrayColor,
+    borderColor: WhiteColor,
+  },
+  IN_REVIEW: {
+    color: PrimaryColorRed,
+    borderColor: WhiteColor,
+  },
+  PENDING: {
+    color: PrimaryColorBlue,
+    borderColor: WhiteColor,
+  },
+  IN_TESTING: {
+    color: GrayColor,
     borderColor: WhiteColor,
   },
 };
