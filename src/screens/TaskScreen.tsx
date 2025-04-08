@@ -21,6 +21,7 @@ import { useAppDispatch } from '../redux/hooks';
 import { setLoading } from '../redux/slices/appSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../navigation/AppNavigation';
+import { PopUpAddButton } from '../components/PopUpAddButton';
 
 
 
@@ -40,7 +41,7 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     const accessToken = useSelector(tokenSelector);
     const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
     const [listTodo, setListTodo] = useState<GetAllTasksData[]>([]);
-    const [create, setCreate] = useState(false);
+    const [create, setCreate] = useState<"TODO"|"TASK"|"CLOSED"|"OPENED">('CLOSED');
     const [showTaskInfo, setShowTaskInfo] = useState(false);
     const dispatch = useAppDispatch();
     function handleClickTask(taskId: string){
@@ -146,12 +147,20 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                 </ScrollView>
             </View>
             {
-                create &&
+                (create=='TODO' || create=='TASK') &&
                 <CreateNewTaskSection openStatus={create} setOpenStatus = {setCreate}/>
             }
-            <TouchableOpacity onPress={()=>{setCreate(!create)}} style ={{position: 'absolute', bottom: 10, backgroundColor: !create? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center'}}>
-                <Title size={40} color={WhiteColor} title={!create?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
-            </TouchableOpacity>
+            <View style = {{position: 'absolute', bottom: 10, backgroundColor: create=='CLOSED'? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', elevation: 4}}>
+                {
+                    create=="OPENED" &&
+                    <View style = {{position: 'absolute', top: -60}}>
+                        <PopUpAddButton onClick={setCreate}/>
+                    </View>
+                }
+                <TouchableOpacity onPress={()=>{create=="CLOSED"? setCreate('OPENED'): setCreate('CLOSED')}}>
+                    <Title size={40} color={WhiteColor} title={create=='CLOSED'?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 };

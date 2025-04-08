@@ -7,7 +7,7 @@ type CreateTaskParam = {
   priority: string;
   description: string;
   status: string;
-  startAt: string;
+  startAt: string | undefined;
   dueAt: string;
 };
 

@@ -25,8 +25,8 @@ import { Status } from "../components/Status"
 
 
 type CreateNewTaskSectionParams ={
-    openStatus: boolean;
-    setOpenStatus: React.Dispatch<React.SetStateAction<boolean>>;
+    openStatus: 'TODO'|'TASK'|'CLOSED'|'OPENED';
+    setOpenStatus: React.Dispatch<React.SetStateAction<'TODO'|'TASK'|'CLOSED'|'OPENED'>>;
 }
 
 export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskSectionParams)=>{
@@ -55,14 +55,14 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
         } else if (description==""){
             Alert.alert("Description cannot be blank");
         } else{
-            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: startDate.toISOString(), dueAt: endDate.toISOString()})
+            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: openStatus=="TASK"?startDate.toISOString(): undefined, dueAt: endDate.toISOString()})
                 .then(res=>{
                     console.log(res.data.content);
-                    setOpenStatus(false);
+                    setOpenStatus('CLOSED');
                 })
                 .catch(error=>{
                     console.log("Create task error with message:", error);
-                    setOpenStatus(false);
+                    setOpenStatus('CLOSED');
                 })
         }
     }
@@ -97,40 +97,43 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
         }}>
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style = {{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <Title title="New Task" color={GrayColor} size={36} type={true} horizontalPadding={0} verticalPadding={24} center={false}/>
+                    <Title title={openStatus=="TASK"?"New Task": "New Todo"} color={GrayColor} size={36} type={true} horizontalPadding={0} verticalPadding={24} center={false}/>
                     <Button title="Create" color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{handleCreateAction()}}/>
                 </View>
                 <View style = {{marginTop: 36}}>
-                    <Input type={InputNormal} placeholder="Task title" value={title} onChangeText={setTitle}/>
-                    <MultipleLinesInput placeholder="Task Description" onChangeText={setDescription} value={description}/>
-                    <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
-                        <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
-                            <CalendarColourIcon width={24} height={24} color={PrimaryColorRed}/>
-                            <Space space={12}/>
-                            <Title title='Start At: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                    <Input type={InputNormal} placeholder={openStatus=="TASK"?"Task title": "Todo title"} value={title} onChangeText={setTitle}/>
+                    <MultipleLinesInput placeholder={openStatus=="TASK"?"Task description": "Todo description"} onChangeText={setDescription} value={description}/>
+                    {
+                        openStatus=='TASK'&&
+                        <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
+                            <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
+                                <CalendarColourIcon width={24} height={24} color={PrimaryColorRed}/>
+                                <Space space={12}/>
+                                <Title title='Start At: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
 
+                            </View>
+                            <View style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
+
+                                <TouchableOpacity style = {{}} onPress={()=>{
+                                    setOpen(true);
+                                    setClockMode('date');
+                                    setTimeMode('start');
+                                }}>
+                                    <Title title={`${startDate.getDate()}/${startDate.getMonth()+1}/${startDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+
+                                </TouchableOpacity>
+                                <Space space={12}/>
+                                <TouchableOpacity style = {{}} onPress={()=>{
+                                    setOpen(true);
+                                    setClockMode('time');
+                                    setTimeMode('start');
+                                }}>
+                                    <Title title={`${startDate.getHours()<10? '0'+ startDate.getHours().toString() : startDate.getHours()}:${startDate.getMinutes()<10? '0'+ startDate.getMinutes().toString() : startDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                                </TouchableOpacity>
+                                
+                            </View>
                         </View>
-                        <View style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'center'}}>
-
-                            <TouchableOpacity style = {{}} onPress={()=>{
-                                setOpen(true);
-                                setClockMode('date');
-                                setTimeMode('start');
-                            }}>
-                                <Title title={`${startDate.getDate()}/${startDate.getMonth()+1}/${startDate.getFullYear()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-
-                            </TouchableOpacity>
-                            <Space space={12}/>
-                            <TouchableOpacity style = {{}} onPress={()=>{
-                                setOpen(true);
-                                setClockMode('time');
-                                setTimeMode('start');
-                            }}>
-                                <Title title={`${startDate.getHours()<10? '0'+ startDate.getHours().toString() : startDate.getHours()}:${startDate.getMinutes()<10? '0'+ startDate.getMinutes().toString() : startDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
-                            </TouchableOpacity>
-                            
-                        </View>
-                    </View>
+                    }
                     <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
                         <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
                             <ClockSolid width={24} height={24} color={GreenColor}/>
