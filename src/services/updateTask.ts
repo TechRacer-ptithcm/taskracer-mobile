@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 type UpdateTaskParam = {
   id: string;
@@ -54,7 +54,7 @@ export const updateTask = ({
     startAt,
     dueAt,
   });
-  return axios
+  return axiosInstance
     .put<UpdateTaskResponse>(
       `${process.env.EXPO_PUBLIC_BASE_URL}/content/task?taskId=${id}`,
       {

@@ -23,7 +23,7 @@ export const TaskSmall = ({title, ownerName, startTime, endTime, type, onClick} 
     const progressPercent = ((new Date()).getTime() - startAt)*100/duration;
     const remainHours = Math.round((endAt - (new Date()).getTime())/3600000)
     return (
-        <TouchableOpacity style = {{flexDirection: 'row', alignItems: 'center', width: '100%', backgroundColor: BackgroundColor, justifyContent: 'space-between', padding:12, borderRadius: 20}} onPress={onClick}>
+        <TouchableOpacity style = {{flexDirection: 'row', elevation: 4, alignItems: 'center', width: '100%', backgroundColor: BackgroundColor, justifyContent: 'space-between', padding:12, borderRadius: 20}} onPress={onClick}>
             <View style = {{flexDirection: 'row', alignItems: 'center', flex:1}}>
                 <View style = {{width: 60, height: 60, borderRadius:10, backgroundColor:type ? RedSuperLight : BlueSuperLight, padding: 8}}>
                     <View style = {{flexDirection: 'row', flex:1}}>

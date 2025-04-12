@@ -21,7 +21,7 @@ export const TaskBig = ({title, ownerName, startTime, endTime, type, onClick} : 
     const remainHours = Math.round((endTime.valueOf() - (new Date()).valueOf())/3600000)
     console.log(duration, progressPercent)
     return (
-        <TouchableOpacity style = {{width: 240, minHeight: 280, backgroundColor: 'black', borderRadius: 20, overflow: 'hidden'}} onPress={onClick}>
+        <TouchableOpacity style = {{width: 240, minHeight: 280, backgroundColor: 'black', borderRadius: 20, overflow: 'hidden', elevation: 6}} onPress={onClick}>
             <View style = {{flex: 4, backgroundColor: type ? PrimaryColorRed : PrimaryColorBlue, position:'relative'}}>
                 <View style = {{flex: 1, position: 'absolute', flexDirection: 'row', transform: [{rotate: '-45deg'}], top: -120}}>
                     <View style = {{width: 80, height: 500, backgroundColor: type ? RedLight : BlueLight}}/>

@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 type CreateTaskParam = {
   accessToken: string;
@@ -54,7 +54,7 @@ export const createTask = ({
     startAt,
     dueAt,
   });
-  return axios
+  return axiosInstance
     .post<CreateTaskResponse>(
       `${process.env.EXPO_PUBLIC_BASE_URL}/content/task`,
       {

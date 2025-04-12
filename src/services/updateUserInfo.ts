@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 type UpdateUserParams = {
   name: string;
@@ -32,7 +32,7 @@ export const updateUser = ({
   birth,
   accessToken,
 }: UpdateUserParams): Promise<UpdateUserResponse> => {
-  return axios
+  return axiosInstance
     .put<UpdateUserResponse>(
       `${process.env.EXPO_PUBLIC_BASE_URL}/social/user`,
       { name, gender, birth },

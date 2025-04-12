@@ -29,6 +29,10 @@ import { Priorities } from "../constants/strings"
 import { ListStatus } from "../sections/ListStatus"
 import { updateTask } from "../services/updateTask"
 import { NativeStackNavigationProp } from "@react-navigation/native-stack"
+import TrashIcon from "../assets/icons/TrashIcon"
+import { deleteTask } from "../services/deleteTask"
+import { refresh } from "../services/refresh"
+import { setToken } from "../redux/slices/authSlice"
 
 
 export type TaskInfoScreenParams = {
@@ -68,14 +72,36 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
     const handleClickUpdate = useCallback(()=>{
         updateTask({id: taskId?taskId:"", accessToken: accessToken, type: task?.type?task.type:"", content: title, priority, description, status, startAt: startTime.toISOString(), dueAt: dueTime.toISOString()})  
             .then(res=>{   
-                Alert.alert("Update task successfully!!")
+                Alert.alert("Update successfully!!")
                 setIsUpdate(false)
                 navigation.goBack()
             })
             .catch(err=>{
-                console.log('Update task error with message:', err);
+                console.log('Update error with message:', err);
             })
     }, [task, title, startTime, dueTime, priority, status, description])
+    const handleCLickDelete = useCallback(()=>{
+        dispatch(setLoading(true));
+        deleteTask({taskId: taskId?taskId:"", accessToken: accessToken})  
+            .then(res=>{   
+                Alert.alert("Delete successfully!!")
+                dispatch(setLoading(false));
+                navigation.goBack()
+            })
+            .catch(err=>{
+                console.log('Update error with message:', err);
+                if (err.response?.status === 401){
+                    refresh()
+                        .then(res =>{
+                            console.log('new access token', res.data.data.access_token);
+                            dispatch(setToken(res.data.data.access_token));
+                        })
+                        .catch(error=>{
+                            console.log('refresh error with message:', error);
+                        })
+                }
+            })
+    }, [accessToken])
     useEffect(()=>{
         dispatch(setLoading(true))
         getTaskById({id: taskId, accessToken:accessToken}).then((res)=>{
@@ -103,7 +129,7 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
         }).finally(()=>{
             dispatch(setLoading(false));
         })
-    }, [])
+    }, [accessToken])
     useEffect(()=>{
         console.log(originalTaskValue)
         if (
@@ -124,12 +150,15 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
         <View style = {{flex: 1, backgroundColor: WhiteColor, position: 'relative', paddingTop: AppPadding*3, paddingLeft: AppPadding, paddingRight: AppPadding}}>  
             <OverlayBubbleAnimation/>
             <View style = {{flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
-                    <TouchableOpacity onPress={()=>{console.log("ahihi")}}>
+                    <TouchableOpacity onPress={()=>{navigation.goBack()}}>
                         <BackIcon width={30} height={30} color ={GrayColor}/>
                     </TouchableOpacity>
                     <View style = {{flex: 1, alignItems: 'center', justifyContent: 'center'}}>
                         <Title title={"Detail"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                     </View>
+                    <TouchableOpacity onPress={handleCLickDelete}>
+                        <TrashIcon width={30} height={30} color ={'#000'}/>
+                    </TouchableOpacity>
                 </View>
             <ScrollView style = {{flex: 1}} showsVerticalScrollIndicator={false}>                
                 <Space space={AppPadding}/>

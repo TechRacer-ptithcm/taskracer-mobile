@@ -1,7 +1,7 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 export const getUserInfo = async (token: string) => {
-  return axios
+  return axiosInstance
     .get(`${process.env.EXPO_PUBLIC_BASE_URL}/social/user-data`, {
       headers: {
         "Content-Type": "application/json",

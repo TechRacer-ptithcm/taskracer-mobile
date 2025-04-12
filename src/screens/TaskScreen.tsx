@@ -22,6 +22,8 @@ import { setLoading } from '../redux/slices/appSlice';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { AppStackParamList } from '../navigation/AppNavigation';
 import { PopUpAddButton } from '../components/PopUpAddButton';
+import { refresh } from '../services/refresh';
+import { setToken } from '../redux/slices/authSlice';
 
 
 
@@ -53,7 +55,7 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
             getAllTasks({accessToken})
                 .then((res)=>{
                     const listTask: GetAllTasksData[]=[];
-                    const listTodo: GetAllTasksData[] =[];
+                    const listTodo: GetAllTasksData[]=[];
                     res.data.forEach((task: GetAllTasksData)=>{
                         if(task.startAt){
                             listTask.push(task);

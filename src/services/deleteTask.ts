@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 type DeleteTaskParam = {
   accessToken: string;
@@ -13,9 +13,9 @@ type DeleteTaskResponse = {
 };
 
 export const deleteTask = ({ accessToken, taskId }: DeleteTaskParam) => {
-  return axios
+  return axiosInstance
     .delete<DeleteTaskResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task/${taskId}`,
+      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task?taskId=${taskId}`,
       {
         headers: {
           "Content-Type": "application/json",

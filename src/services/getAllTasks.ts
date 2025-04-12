@@ -1,4 +1,4 @@
-import axios from "axios";
+import axiosInstance from "../configs/axiosInstance";
 
 type GetAllTasksParam = {
   accessToken: string;
@@ -27,7 +27,7 @@ export type GetAllTasksData = {
 };
 
 export const getAllTasks = ({ accessToken }: GetAllTasksParam) => {
-  return axios
+  return axiosInstance
     .get<GetAllTasksResponse>(
       `${process.env.EXPO_PUBLIC_BASE_URL}/content/tasks`,
       {

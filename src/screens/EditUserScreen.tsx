@@ -22,6 +22,8 @@ import { BottomTabBar } from "@react-navigation/bottom-tabs"
 import { MainStackString } from "../constants/screen"
 import { useAppDispatch } from "../redux/hooks"
 import { setLoading } from "../redux/slices/appSlice"
+import { refresh } from "../services/refresh"
+import { setToken } from "../redux/slices/authSlice"
 
 export const EditUserScreen = () => {
     const [name, setName] = useState("");
@@ -42,7 +44,16 @@ export const EditUserScreen = () => {
         })
         .catch(error=>{
             console.log("Update user error with message:", error);
-            dispatch(setLoading(false));
+            if (error.response?.status === 401){
+                refresh()
+                    .then(res =>{
+                        console.log('new access token', res.data.data.access_token);
+                        dispatch(setToken(res.data.data.access_token));
+                    })
+                    .catch(error=>{
+                        console.log('refresh error with message:', error);
+                    })
+            }
         })
     }
     return (
