@@ -20,6 +20,9 @@ import { tokenSelector } from '../redux/selectors/authSelectors';
 const {height} = Dimensions.get('window')
 export const CalendarScreen = () => {
     const accessToken = useSelector(tokenSelector);
+    useEffect(()=>{
+            console.log(accessToken);
+        }, [accessToken])
     useFocusEffect(
             useCallback(()=>{
                 getAllTasks({accessToken})

@@ -1,4 +1,4 @@
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
 type GetAllTasksParam = {
   accessToken: string;
@@ -27,16 +27,9 @@ export type GetAllTasksData = {
 };
 
 export const getAllTasks = ({ accessToken }: GetAllTasksParam) => {
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .get<GetAllTasksResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/tasks`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    .get<GetAllTasksResponse>(`/content/tasks`)
     .then((res) => {
       return res.data;
     });

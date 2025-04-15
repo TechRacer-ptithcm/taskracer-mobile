@@ -1,4 +1,4 @@
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
 type CreateTaskParam = {
   accessToken: string;
@@ -54,25 +54,17 @@ export const createTask = ({
     startAt,
     dueAt,
   });
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .post<CreateTaskResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task`,
-      {
-        type,
-        content,
-        priority,
-        description,
-        status,
-        startAt,
-        dueAt,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    .post<CreateTaskResponse>(`/content/task`, {
+      type,
+      content,
+      priority,
+      description,
+      status,
+      startAt,
+      dueAt,
+    })
     .then((res) => {
       return res.data;
     });

@@ -9,7 +9,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { AuthStackString, MainStackString, TaskInfoString, TaskStackString } from '../constants/screen';
 import { TaskNavigator } from './TaskNavigation';
 import { TaskInfoScreen } from '../screens/TaskInfoScreen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { View } from 'react-native';
+import { getItem } from '../configs/localStorage';
 
 export type AppStackParamList = {
     [AuthStackString]: undefined;
@@ -19,22 +21,39 @@ export type AppStackParamList = {
 const Stack = createNativeStackNavigator<AppStackParamList>();
 export const AppNavigation = () => {
     const loading = useAppSelector(loadingSelector);
+    const [handleLoginState, setHandleLoginState] = useState(false);
+    const [userState, setUserState] = useState(false);
     useEffect(()=>{
-        console.log('loading change')
-    }, [loading])
+        getItem('user')
+            .then(res=>{
+                if (res){
+                    setUserState(true);
+                    setHandleLoginState(true);
+                } else{
+                    setHandleLoginState(true);
+                }
+            })
+    }, [])
     const user : any = useAppSelector(userSelector);
     return (
-        <NavigationContainer>
-            {/* {!user ? <AuthNavigator/> : <BottomBarNavigator/>} */}
-            <Stack.Navigator initialRouteName={user?MainStackString:AuthStackString}>
-                <Stack.Screen name={AuthStackString} component={AuthNavigator} options={{headerShown: false}}/>
+        handleLoginState?
+        (
+            <NavigationContainer>
+                {/* {!user ? <AuthNavigator/> : <BottomBarNavigator/>} */}
+                <Stack.Navigator initialRouteName={userState?MainStackString:AuthStackString}>
+                    <Stack.Screen name={AuthStackString} component={AuthNavigator} options={{headerShown: false}}/>
 
-                <Stack.Screen name={TaskInfoString} options={{headerShown: false}}>
-                    {(props)=><TaskInfoScreen {...props} />}
-                </Stack.Screen>
-                <Stack.Screen name={MainStackString} component={BottomBarNavigator} options={{headerShown: false}}/>
-            </Stack.Navigator>
-            {loading && <Loading/>}
-        </NavigationContainer>
+                    <Stack.Screen name={TaskInfoString} options={{headerShown: false}}>
+                        {(props)=><TaskInfoScreen {...props} />}
+                    </Stack.Screen>
+                    <Stack.Screen name={MainStackString} component={BottomBarNavigator} options={{headerShown: false}}/>
+                </Stack.Navigator>
+                {loading && <Loading/>}
+            </NavigationContainer>
+        
+        ):
+        <View style = {{position: 'relative', flex: 1}}>
+            <Loading/>
+        </View>
     );
 };

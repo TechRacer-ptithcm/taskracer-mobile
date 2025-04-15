@@ -22,6 +22,8 @@ import { loadingSelector, pomoModeSelector } from '../redux/selectors/appSelecto
 import { setToken, setUser } from '../redux/slices/authSlice';
 import { LoginString, MainStackString, OtpString, RegisterString } from '../constants/screen';
 import { sentOTP } from '../services/sendOTP';
+import { getUserInfo } from '../services/getUserInfo';
+import { setItem } from '../configs/localStorage';
 export const LoginScreen = () => {
     const [password, setPassword] = useState('');
     const [account, setAccount] = useState('');
@@ -49,6 +51,14 @@ export const LoginScreen = () => {
                             dispatch(setUser({ah:'a'}))
                         }
                     }
+                    return res
+                })
+                .then(res=>{
+                    getUserInfo({token: res.data.access_token})
+                        .then(res=>{
+                            const user = res.data.data.id;
+                            setItem('user', user);
+                        })
                 })
                 .catch(error=>{
                     console.log("Login error with message:", error);

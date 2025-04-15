@@ -1,5 +1,5 @@
 import { Task } from "react-native";
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
 type GetTaskByIdParam = {
   id: string | undefined;
@@ -14,16 +14,9 @@ type GetTaskByIdResponse = {
 };
 
 export const getTaskById = ({ id, accessToken }: GetTaskByIdParam) => {
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .get<GetTaskByIdResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task?taskId=${id ? id : ""}`,
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    .get<GetTaskByIdResponse>(`/content/task?taskId=${id ? id : ""}`)
     .then((res) => {
       return res.data;
     });

@@ -1,14 +1,32 @@
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
-export const getUserInfo = async (token: string) => {
+type GetUserInfoProps = {
+  token: string;
+};
+
+type GetUserInfoResponse = {
+  message: string;
+  code: string;
+  status: boolean;
+  data: GetUserInfoData;
+};
+type GetUserInfoData = {
+  id: string;
+  tier: string;
+  streak: number;
+  username: string;
+  email: string;
+  active: boolean;
+  name: string;
+  gender: string;
+  birth: string | null;
+};
+
+export const getUserInfo = async ({ token }: GetUserInfoProps) => {
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .get(`${process.env.EXPO_PUBLIC_BASE_URL}/social/user-data`, {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-    })
+    .get<GetUserInfoResponse>(`/social/user-data`)
     .then((res) => {
-      return res.data;
+      return res;
     });
 };

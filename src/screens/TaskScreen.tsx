@@ -33,6 +33,9 @@ type TaskScreenProps = {
 }
 
 export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
+
+
+
     userName = "Alex Gi";
     var currentHour = (new Date()).getHours()
     var nextDay = new Date();
@@ -46,6 +49,11 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     const [create, setCreate] = useState<"TODO"|"TASK"|"CLOSED"|"OPENED">('CLOSED');
     const [showTaskInfo, setShowTaskInfo] = useState(false);
     const dispatch = useAppDispatch();
+
+    useEffect(()=>{
+        console.log(accessToken);
+    }, [accessToken])
+
     function handleClickTask(taskId: string){
         navigation.navigate(TaskInfoString, {taskId: taskId});
     }

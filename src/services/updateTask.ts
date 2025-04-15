@@ -1,4 +1,4 @@
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
 type UpdateTaskParam = {
   id: string;
@@ -54,25 +54,17 @@ export const updateTask = ({
     startAt,
     dueAt,
   });
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .put<UpdateTaskResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/content/task?taskId=${id}`,
-      {
-        type,
-        content,
-        priority,
-        description,
-        status,
-        startAt,
-        dueAt,
-      },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    .put<UpdateTaskResponse>(`/content/task?taskId=${id}`, {
+      type,
+      content,
+      priority,
+      description,
+      status,
+      startAt,
+      dueAt,
+    })
     .then((res) => {
       return res.data;
     });

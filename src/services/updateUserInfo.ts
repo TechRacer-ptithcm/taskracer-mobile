@@ -1,4 +1,4 @@
-import axiosInstance from "../configs/axiosInstance";
+import { axiosInitialization } from "../configs/axiosInstance";
 
 type UpdateUserParams = {
   name: string;
@@ -32,16 +32,8 @@ export const updateUser = ({
   birth,
   accessToken,
 }: UpdateUserParams): Promise<UpdateUserResponse> => {
+  const axiosInstance = axiosInitialization();
   return axiosInstance
-    .put<UpdateUserResponse>(
-      `${process.env.EXPO_PUBLIC_BASE_URL}/social/user`,
-      { name, gender, birth },
-      {
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    )
+    .put<UpdateUserResponse>(`/social/user`, { name, gender, birth })
     .then((response) => response.data);
 };
