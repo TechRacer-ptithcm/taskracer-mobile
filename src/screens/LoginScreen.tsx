@@ -91,6 +91,7 @@ export const LoginScreen = () => {
     const handleLoginWithGoogle = ()=>{
         // do something
     };
+
     return (
         <View style = {{position: 'relative', flex: 1, justifyContent: 'center', alignItems: 'center', padding: AppPadding}} >
             <OverlayBubbleAnimation/>
@@ -112,7 +113,6 @@ export const LoginScreen = () => {
                 <Title title="Haven't had account? Register" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             </TouchableOpacity>
             <Space space={30}/>
-
             <Title title="Or continue with" color={PrimaryColorRed} size={12} type = {true} horizontalPadding={0} verticalPadding={0}/>
             <ClickableCircle size={50} color={WhiteColor} onPress={handleLoginWithGoogle}>
                 <GoogleIcon width={24} height={24} color={PurpleColor}/>
@@ -120,3 +120,5 @@ export const LoginScreen = () => {
         </View>
     );
 };
+
+

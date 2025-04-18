@@ -14,6 +14,7 @@ import { useEffect } from 'react';
  import * as SplashScreen from 'expo-splash-screen'; 
 import { OTPScreen } from './src/screens/OTPScreen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { TeamScreen } from './src/screens/TeamScreen';
 
 // type SectionProps = PropsWithChildren<{
 //   title: string;
@@ -64,6 +65,7 @@ const [loaded, error] = useFonts({
     <Provider store={store}>
       <GestureHandlerRootView style={{ flex: 1 }}>
         <AppNavigation/>
+        {/* <TeamScreen/> */}
       </GestureHandlerRootView>
       {/* <OTPScreen /> */}
     </Provider>

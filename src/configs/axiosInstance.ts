@@ -19,7 +19,6 @@ export const axiosInitialization: () => AxiosInstance = () => {
       const isRefresh = dayjs.unix(user.exp ? user.exp : 0).diff(dayjs()) < 1;
 
       if (!isRefresh) return request;
-
       const newAccessToken = await refresh()
         .then((res) => {
           return res.data.data.access_token;

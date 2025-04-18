@@ -12,6 +12,7 @@ import ClockIcon from '../assets/icons/ClockIcon';
 import ChatIcon from '../assets/icons/ChatIcon';
 import UserIcon from '../assets/icons/UserIcon';
 import { View } from 'react-native';
+import CommunityIcon from '../assets/icons/CommunityIcon';
 
 
 const BottomBarStack = createBottomTabNavigator();
@@ -29,7 +30,7 @@ export const BottomBarNavigator = () => {
                 return <ClockIcon size={32} color={props.focused ? PrimaryColorRed : '#000'} />;
             }}}/>
             <BottomBarStack.Screen name={ChatString} component={ChatScreen} options={{headerShown: false, tabBarShowLabel: false, tabBarIcon(props) {
-                return <ChatIcon size={32} color={props.focused ? PrimaryColorRed : '#000'} />;
+                return <CommunityIcon size={32} color={props.focused ? PrimaryColorRed : '#000'} />;
             }}}/>
             <BottomBarStack.Screen name={RankString} component={RankScreen} options={{headerShown: false, tabBarShowLabel: false, tabBarIcon(props) {
                 return <UserIcon size={32} color={props.focused ? PrimaryColorRed : '#000'} />;
