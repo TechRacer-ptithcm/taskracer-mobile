@@ -6,7 +6,7 @@ import { AppPadding } from '../constants/spaces';
 import { useState } from 'react';
 import SearchIcon from '../assets/icons/SearchIcon';
 import { Space } from '../components/Space';
-import { Chat } from '../components/Chat';
+import { Chat } from '../components/Team';
 import { Post } from '../components/Post';
 import { Profile } from '../components/Profile';
 import { BronzeI, SilverI } from '../constants/rank';

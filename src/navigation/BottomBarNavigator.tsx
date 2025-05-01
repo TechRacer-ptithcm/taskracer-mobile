@@ -4,7 +4,7 @@ import { CalendarScreen } from '../screens/CalendarScreen';
 import { PomodoroScreen } from '../screens/PomodoroScreen';
 import { ChatScreen } from '../screens/ChatScreen';
 import { RankScreen } from '../screens/RankScreen';
-import { CalendarString, ChatString, PomodoroString, RankString, TaskString } from '../constants/screen';
+import { CalendarString, ChatString, PomodoroString, RankString, SocialString, TaskString } from '../constants/screen';
 import DashBoardIcon from '../assets/icons/DashBoardIcon';
 import { PrimaryColorRed } from '../assets/color';
 import CalendarIcon from '../assets/icons/CalendarIcon';
@@ -13,6 +13,7 @@ import ChatIcon from '../assets/icons/ChatIcon';
 import UserIcon from '../assets/icons/UserIcon';
 import { View } from 'react-native';
 import CommunityIcon from '../assets/icons/CommunityIcon';
+import { TeamNavigation } from './TeamNavigation';
 
 
 const BottomBarStack = createBottomTabNavigator();

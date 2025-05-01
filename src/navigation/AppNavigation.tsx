@@ -6,12 +6,14 @@ import { BottomBarNavigator } from './BottomBarNavigator';
 import { loadingSelector } from '../redux/selectors/appSelectors';
 import { Loading } from '../components/Loading';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { AuthStackString, MainStackString, TaskInfoString, TaskStackString } from '../constants/screen';
+import { AuthStackString, MainStackString, SocialString, TaskInfoString, TaskStackString } from '../constants/screen';
 import { TaskNavigator } from './TaskNavigation';
 import { TaskInfoScreen } from '../screens/TaskInfoScreen';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 import { getItem } from '../configs/localStorage';
+import { TeamScreen } from '../screens/TeamScreen';
+import { TeamNavigation } from './TeamNavigation';
 
 export type AppStackParamList = {
     [AuthStackString]: undefined;
@@ -47,6 +49,7 @@ export const AppNavigation = () => {
                         {(props)=><TaskInfoScreen {...props} />}
                     </Stack.Screen>
                     <Stack.Screen name={MainStackString} component={BottomBarNavigator} options={{headerShown: false}}/>
+                    <Stack.Screen name={SocialString} component={TeamNavigation} options={{headerShown: false}}/>
                 </Stack.Navigator>
                 {loading && <Loading/>}
             </NavigationContainer>
