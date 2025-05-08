@@ -70,7 +70,7 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
     const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
     const dispatch = useAppDispatch();
     const handleClickUpdate = useCallback(()=>{
-        updateTask({id: taskId?taskId:"", accessToken: accessToken, type: task?.type?task.type:"", content: title, priority, description, status, startAt: startTime.toISOString(), dueAt: dueTime.toISOString()})  
+        updateTask({id: taskId?taskId:"", accessToken: accessToken, type: task?.type?task.type:"", content: title, priority, description, status, startAt: startTime.toISOString(), dueAt: dueTime.toISOString(), taskType: task?.taskType?task.taskType:"TASK"})  
             .then(res=>{   
                 Alert.alert("Update successfully!!")
                 setIsUpdate(false)

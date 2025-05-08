@@ -18,4 +18,5 @@ export interface Task {
     | "IN_TESTING";
   type: "USER" | "TEAM";
   users: string[] | null;
+  taskType: string;
 }

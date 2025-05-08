@@ -55,7 +55,7 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
         } else if (description==""){
             Alert.alert("Description cannot be blank");
         } else{
-            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: openStatus=="TASK"?startDate.toISOString(): undefined, dueAt: endDate.toISOString()})
+            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: openStatus=="TASK"?startDate.toISOString(): undefined, dueAt: endDate.toISOString(), taskType: openStatus})
                 .then(res=>{
                     console.log(res.data.content);
                     setOpenStatus('CLOSED');
@@ -104,7 +104,6 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                     <Input type={InputNormal} placeholder={openStatus=="TASK"?"Task title": "Todo title"} value={title} onChangeText={setTitle}/>
                     <MultipleLinesInput placeholder={openStatus=="TASK"?"Task description": "Todo description"} onChangeText={setDescription} value={description}/>
                     {
-                        openStatus=='TASK'&&
                         <View style = {{flexDirection: 'row', alignItems:'center', padding: 12, marginTop: 16, justifyContent: 'space-between'}}>
                             <View style = {{padding: 16, borderRadius: 12, backgroundColor: BackgroundColor, elevation: 6, flexDirection: 'row', alignItems: 'center'}}>
                                 <CalendarColourIcon width={24} height={24} color={PrimaryColorRed}/>
@@ -130,7 +129,6 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                                 }}>
                                     <Title title={`${startDate.getHours()<10? '0'+ startDate.getHours().toString() : startDate.getHours()}:${startDate.getMinutes()<10? '0'+ startDate.getMinutes().toString() : startDate.getMinutes()}`} size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
                                 </TouchableOpacity>
-                                
                             </View>
                         </View>
                     }

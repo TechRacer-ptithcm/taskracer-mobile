@@ -10,6 +10,7 @@ type UpdateTaskParam = {
   status: string;
   startAt: string;
   dueAt: string;
+  taskType: string,
 };
 
 type UpdateTaskResponse = {
@@ -44,6 +45,7 @@ export const updateTask = ({
   status,
   startAt,
   dueAt,
+  taskType
 }: UpdateTaskParam) => {
   console.log({
     type,
@@ -64,6 +66,7 @@ export const updateTask = ({
       status,
       startAt,
       dueAt,
+      taskType
     })
     .then((res) => {
       return res.data;

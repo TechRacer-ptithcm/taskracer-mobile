@@ -9,6 +9,7 @@ type CreateTaskParam = {
   status: string;
   startAt: string | undefined;
   dueAt: string;
+  taskType: string;
 };
 
 type CreateTaskResponse = {
@@ -44,6 +45,7 @@ export const createTask = ({
   status,
   startAt,
   dueAt,
+  taskType
 }: CreateTaskParam) => {
   console.log({
     type,
@@ -64,6 +66,7 @@ export const createTask = ({
       status,
       startAt,
       dueAt,
+      taskType
     })
     .then((res) => {
       return res.data;

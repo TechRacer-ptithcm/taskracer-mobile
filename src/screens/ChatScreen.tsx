@@ -3,97 +3,34 @@ import { OverlayBubbleAnimation } from '../components/OverlayBubbleAnimation';
 import { Title } from '../components/Title';
 import { BackgroundColor, GrayColor, PrimaryColorBlue, WhiteColor } from '../assets/color';
 import { AppPadding } from '../constants/spaces';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchIcon from '../assets/icons/SearchIcon';
 import { Space } from '../components/Space';
-import { Chat, Team } from '../components/Team';
+import { TeamComponent } from '../components/Team';
 import { Post } from '../components/Post';
 import { useNavigation } from '@react-navigation/native';
 import { SocialString, TeamInfoString } from '../constants/screen';
+import { getAllTeamss } from '../services/getAllTeams';
+import { Team } from '../models/Team';
 
 
 export const ChatScreen = () => {
     const [mode, setMode] = useState(true);
     const [searchInput, setSearchInput] = useState('')
     const navigation = useNavigation();
-    const listChat = [
-        {
-            id: 1,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },
-        {
-            id: 2,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },
-        {
-            id: 3,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },
-        {
-            id: 4,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 5,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 6,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 7,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 8,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 9,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 10,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 11,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        },{
-            id: 12,
-            avata: '',
-            name: 'John Alexander',
-            message: "Common bae!",
-            time: '09:34 PM'
-        }
-    ]
+    const [listChat, setListChat] = useState<Team[]>([]);
+    useEffect(()=>{
+        getAllTeamss()
+            .then(res=>{
+                setListChat(res.data.content)
+                console.log(res.data)
+                return res.data
+
+            })
+            .catch(error=>{
+                console.log(error)
+            })
+    }, [])
     return (
         <View style={{position: 'relative', flex:1}}>
             <OverlayBubbleAnimation/>
@@ -119,7 +56,7 @@ export const ChatScreen = () => {
                     return (
                         mode?
                         <TouchableOpacity onPress={()=>{navigation.navigate(SocialString)}}>
-                            <Team name='Lau ga Binh Thuan' avata='https://cdn.chotot.com/PNht_tvBkqRF21zDcCmPZuvPyjd-yujJrR-jd_tcV5k/preset:view/plain/85a60f9cddd6b1d76de8771c44105910-2921027249543913874.jpg' lastTimeInTeam={new Date()}/>
+                            <TeamComponent id={item.index} name={item.item.name} slug={item.item.slug} visibility={item.item.visibility} user={item.item.user}/>
                             <Space space={12}/>
                         </TouchableOpacity>:
                         <TouchableOpacity>

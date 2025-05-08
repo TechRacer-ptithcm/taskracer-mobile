@@ -6,7 +6,7 @@ type GetAllTeamssResponse = {
   message: string;
   code: string;
   status: boolean;
-  data: GetAllTeamssData[];
+  data: GetAllTeamssData;
 };
 
 export type GetAllTeamssData = {

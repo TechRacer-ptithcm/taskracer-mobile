@@ -1,30 +1,53 @@
 import { Image, View } from "react-native"
 import { Title } from "./Title"
-import { BackgroundColor, GrayColor } from "../assets/color"
+import { BackgroundColor, BubbleColor, GrayColor, PrimaryColorBlue, PrimaryColorRed, WhiteColor } from "../assets/color"
 import { Space } from "./Space"
+import ThreeDotIcon from "../assets/icons/ThreeDotIcon"
+import TaskIcon from "../assets/icons/TaskIcon"
+import CheckIcon from "../assets/icons/CheckIcon"
 
 type TeamProps = {
-    avata: string,
+    id: number,
+    slug: string,
     name: string,
-    lastTimeInTeam: Date
+    visibility: string,
+    user: string[]
 }
 
-export const Team = ({avata, name, lastTimeInTeam} : TeamProps)=>{
+export const TeamComponent = ({id, slug, name, visibility, user} : TeamProps)=>{
     const seen = false;
-    const timeString = `${(lastTimeInTeam.getHours().toString()).length<2 ? '0'+lastTimeInTeam.getHours().toString() : lastTimeInTeam.getHours().toString()}:${(lastTimeInTeam.getMinutes().toString()).length<2 ? '0'+lastTimeInTeam.getMinutes().toString() : lastTimeInTeam.getMinutes().toString()}`
     return (
-        <View style = {{flexDirection: 'row', backgroundColor: !seen? '#efefef' : '#fbfbfb', opacity: !seen?1:0.8, borderRadius: 20, padding:12, justifyContent: 'space-between'}}>
-            <View style = {{flexDirection: 'row', alignItems: 'center'}}>
-
-                <Image source={{uri: 'https://cdn.chotot.com/RmRWI36yk-97axWQ0Le92aDF4wP-hgG3Cx3gsX6t-KY/preset:view/plain/903625df9c042491bead551c2b12856c-2921027247892206895.jpg'}} style = {{width: 50, height: 50, borderRadius: 50}}/>
-                <Space space={12}/>
-                <View>
-                    <Title title={name} color={GrayColor} size={18} type={true} horizontalPadding={0} verticalPadding={0}/>
+        <View style = {{position: 'relative', borderRadius: 20, backgroundColor: id%2===0?PrimaryColorRed: PrimaryColorBlue, padding: 24}}>
+            <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20}}>
+                <Title title={name} size={20} color={WhiteColor} type={true} verticalPadding={0} horizontalPadding={0}/>
+                <ThreeDotIcon width={30} height={30} color={WhiteColor}/>
+            </View>
+            <View style = {{flexDirection: 'row', alignItems: 'center', marginBottom: 14}}>
+                <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingRight: 20}}>
+                    <TaskIcon width = {20} height={20} color = {WhiteColor}/>
                     <Space space={6}/>
-                    <Title title={"You have 2 notifications and 9+ messages"} color={GrayColor} size={12} type={false} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={'204 tasks'} size={12} color={WhiteColor} type={false} verticalPadding={0} horizontalPadding={0}/>
+                </View>
+                <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+                    <CheckIcon width = {20} height={20} color = {WhiteColor}/>
+                    <Space space={6}/>
+                    <Title title={'150/204 completed'} size={12} color={WhiteColor} type={false} verticalPadding={0} horizontalPadding={0}/>
                 </View>
             </View>
-            <Title title={timeString} color={GrayColor} size={12} type={true} horizontalPadding={0} verticalPadding={0}/>
+            <View style  = {{flexDirection: 'row', alignItems: 'center', marginBottom: 14}}>
+                <View style = {{borderWidth: 1, borderColor: GrayColor, position: 'relative', width: 30, height: 30, borderRadius: 30, overflow: 'hidden', backgroundColor: BubbleColor}}>
+                    <Image source={{uri: ''}} style = {{width: 30, height: 30}}/>
+                </View>
+                <View style = {{borderWidth: 1, borderColor: GrayColor, position: 'relative', width: 30, height: 30, borderRadius: 30, overflow: 'hidden', backgroundColor: BubbleColor, justifyContent: 'center', alignItems: 'center', marginLeft: -8}}>
+                    <Title title={'20+'} size={12} color={GrayColor} type={false} verticalPadding={0} horizontalPadding={0}/>
+                </View>
+                <Space space={4}/>
+                <Title title={'David Nop and 35 others'} size={12} color={WhiteColor} type={false} verticalPadding={0} horizontalPadding={0}/>
+
+            </View>
+            <View style = {{alignSelf: 'center', borderBottomWidth: 1, borderColor: WhiteColor}}>
+                <Title title={'View details'} size={12} color={WhiteColor} type={false} verticalPadding={0} horizontalPadding={0}/>
+            </View>
         </View>
     )
 }
