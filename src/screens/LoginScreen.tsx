@@ -19,7 +19,7 @@ import { Loading } from '../components/Loading';
 import { useAppDispatch } from '../redux/hooks';
 import store from '../redux/store';
 import { loadingSelector, pomoModeSelector } from '../redux/selectors/appSelectors';
-import { setToken, setUser } from '../redux/slices/authSlice';
+import { setToken, setUser, setUserId } from '../redux/slices/authSlice';
 import { LoginString, MainStackString, OtpString, RegisterString } from '../constants/screen';
 import { sentOTP } from '../services/sendOTP';
 import { getUserInfo } from '../services/getUserInfo';
@@ -48,7 +48,8 @@ export const LoginScreen = () => {
                             dispatch(setToken(res.data.access_token));
                             dispatch(setLoading(false))
                             navigation.navigate(MainStackString)
-                            dispatch(setUser({ah:'a'}))
+                            Alert.alert(res.data.id, 'ahih');
+                            dispatch(setUserId(res.data.id))
                         }
                     }
                     return res

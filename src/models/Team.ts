@@ -6,5 +6,5 @@ export interface Team {
     name: string,
     ownerId: string,
     visibility: 'PUBLIC' | 'PRIVATE',
-    user: string[]
+    users: string[]
 }

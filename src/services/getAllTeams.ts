@@ -19,7 +19,7 @@ export type GetAllTeamssData = {
 export const getAllTeamss = () => {
   const axiosInstance = axiosInitialization();
   return axiosInstance
-    .get<GetAllTeamssResponse>(`/social/teams`)
+    .get<GetAllTeamssResponse>(`/social/teams?page=1&size=100`)
     .then((res) => {
       return res.data;
     });

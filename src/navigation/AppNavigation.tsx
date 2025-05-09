@@ -14,11 +14,14 @@ import { View } from 'react-native';
 import { getItem } from '../configs/localStorage';
 import { TeamScreen } from '../screens/TeamScreen';
 import { TeamNavigation } from './TeamNavigation';
+import { Team } from '../models/Team';
 
 export type AppStackParamList = {
     [AuthStackString]: undefined;
     [TaskInfoString]: {taskId: string};
-    [MainStackString]: undefined
+    [MainStackString]: undefined;
+    [SocialString]: {team: Team}
+    
 }
 const Stack = createNativeStackNavigator<AppStackParamList>();
 export const AppNavigation = () => {
@@ -49,7 +52,9 @@ export const AppNavigation = () => {
                         {(props)=><TaskInfoScreen {...props} />}
                     </Stack.Screen>
                     <Stack.Screen name={MainStackString} component={BottomBarNavigator} options={{headerShown: false}}/>
-                    <Stack.Screen name={SocialString} component={TeamNavigation} options={{headerShown: false}}/>
+                    <Stack.Screen name={SocialString} options={{headerShown: false}}>
+                        {(props)=><TeamScreen {...props} />}
+                    </Stack.Screen>
                 </Stack.Navigator>
                 {loading && <Loading/>}
             </NavigationContainer>
