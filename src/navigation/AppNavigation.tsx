@@ -20,7 +20,7 @@ export type AppStackParamList = {
     [AuthStackString]: undefined;
     [TaskInfoString]: {taskId: string};
     [MainStackString]: undefined;
-    [SocialString]: {team: Team}
+    [SocialString]: {team: Team, isReload: boolean, setIsReload: React.Dispatch<React.SetStateAction<boolean>>}
     
 }
 const Stack = createNativeStackNavigator<AppStackParamList>();

@@ -5,24 +5,27 @@ import { Space } from "./Space"
 import ThreeDotIcon from "../assets/icons/ThreeDotIcon"
 import TaskIcon from "../assets/icons/TaskIcon"
 import CheckIcon from "../assets/icons/CheckIcon"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { User } from "../models/User"
 import { getUserInfo } from "../services/getUserInfo"
 import { useSelector } from "react-redux"
 import { tokenSelector } from "../redux/selectors/authSelectors"
 import EarthIcon from "../assets/icons/EarthIcon"
+import { joinTeam } from "../services/joinTeam"
+import { Team } from "../models/Team"
 
 type TeamProps = {
     type: 'JOINED'|'HAVENT_JOINED',
-    id: number,
+    id: string,
     slug: string,
     name: string,
     ownerId: string,
     visibility: string,
-    user: string[]
+    user: string[],
+    setListOtherTeams: React.Dispatch<React.SetStateAction<Team[]>>
 }
 
-export const TeamComponent = ({type, id, slug, name, visibility, user} : TeamProps)=>{
+export const TeamComponent = ({type, id, slug, name, visibility, user, setListOtherTeams} : TeamProps)=>{
     const [admin, setAdmin] = useState<User| undefined>(undefined)
     const token = useSelector(tokenSelector);
 
@@ -30,9 +33,20 @@ export const TeamComponent = ({type, id, slug, name, visibility, user} : TeamPro
         getUserInfo({token: token})
             .then(res=>{
                 console.log(res.data.data.name)
+                // setListOtherTeams(pre=>[...pre.filter(item=>item.id!==id)])
             })
             .catch(error=>{
                 console.log('Get user error with message:', error)
+            })
+    }, [])
+    const handleJoinClick = useCallback(()=>{
+        joinTeam({slug: slug})
+            .then(res=>{
+                console.log('Join team successfully!')
+                return res.data.message
+            })
+            .catch(error=>{
+                console.log("Join team error with message:", error);
             })
     }, [])
     const seen = false;
@@ -76,7 +90,7 @@ export const TeamComponent = ({type, id, slug, name, visibility, user} : TeamPro
                 <View style = {{alignSelf: 'center', borderBottomWidth: 1, borderColor: WhiteColor}}>
                     <Title title={'View details'} size={12} color={WhiteColor} type={false} verticalPadding={0} horizontalPadding={0}/>
                 </View>:
-                <TouchableOpacity style = {{alignSelf: 'center', borderBottomWidth: 1, borderColor: WhiteColor, padding: 12, paddingLeft: 24, paddingRight: 24, elevation: 5, borderRadius: 20, backgroundColor: WhiteColor}}>
+                <TouchableOpacity onPress={handleJoinClick} style = {{alignSelf: 'center', borderBottomWidth: 1, borderColor: WhiteColor, padding: 12, paddingLeft: 24, paddingRight: 24, elevation: 5, borderRadius: 20, backgroundColor: WhiteColor}}>
                     <Title title={'Join'} size={12} color={PrimaryColorBlue} type={true} verticalPadding={0} horizontalPadding={0}/>
                 </TouchableOpacity>
             }

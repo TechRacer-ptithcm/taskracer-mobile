@@ -7,7 +7,7 @@ import { Space } from "../components/Space"
 import BellIcon from "../assets/icons/BellIcon"
 import Chat2Icon from "../assets/icons/Chat2Icon"
 import ThreeDotIcon from "../assets/icons/ThreeDotIcon"
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import { HeaderTeamSection } from "../sections/HeaderTeamSection"
 import { CreatePostSection } from "../sections/CreatePostSection"
 import { Post } from "../components/Post"
@@ -18,11 +18,14 @@ import { useSelector } from "react-redux"
 import { tokenSelector } from "../redux/selectors/authSelectors"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackParamList } from "../navigation/AppNavigation"
+import { deleteTeam } from "../services/deleteTeam"
 
 
 export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navigation: any; })=>{
     // const [listPost, setListPost] = useState<>([]);
     const team = route.params.team.item
+    const isReload = route.params?.isReload;
+    const setIsReload = route.params?.setIsReload;
     // const {team} = route.params
     
     const navigation = useNavigation();
@@ -76,6 +79,18 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                 }
             })
     }, [])
+    const handleDeleteClick = useCallback(()=>{
+        console.log('clcick')
+        deleteTeam({slug: team?.slug})
+            .then(res=>{
+                console.log("Delete Team successfully");
+                setIsReload(!isReload)
+                navigation.goBack();
+            })
+            .catch(error=>{
+                console.log("Delete team error with message:", error);
+            })
+    }, [])
     return (
         <View style = {{flex: 1, position: 'relative'}}>
             <OverlayBubbleAnimation/>
@@ -122,9 +137,7 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                                                     Add members
                                                 </Text>
                                             </TouchableOpacity>
-                                            <TouchableOpacity style = {{padding: 6, paddingLeft: 0, paddingRight: 0}} onPress={()=>{
-
-                                            }}>
+                                            <TouchableOpacity style = {{padding: 6, paddingLeft: 0, paddingRight: 0}} onPress={handleDeleteClick}>
                                                 <Text>
                                                     Delete Group
                                                 </Text>

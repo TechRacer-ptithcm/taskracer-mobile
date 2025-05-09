@@ -39,17 +39,14 @@ export const ChatScreen = () => {
                 setListChat(res.data.content)
                 getUserInfo({token: accessToken})
                     .then(respond=>{
-                        const listOwnTeams = res.data.content.filter((item, index)=>{
-                            return item.ownerId === respond.data.data.id
+                        const listYourTeam = res.data.content.filter((item, index)=>{
+                            return item.users.includes(respond.data.data.id)
                         })
-                        const listYourTeams = res.data.content.filter((item, index)=>{
-                            return item.users.includes(respond.data.data.id) && item.ownerId !==respond.data.data.id
+                        setListYourTeams(listYourTeam);
+                        const listOtherTeam = res.data.content.filter((item, index)=>{
+                            return  !listYourTeam.includes(item);
                         })
-                        setListYourTeams(listOwnTeams.concat(listYourTeams));
-                        const listOtherTeams = res.data.content.filter((item, index)=>{
-                            return !listOwnTeams.includes(item) && !listYourTeams.includes(item);
-                        })
-                        setListOtherTeams(listOtherTeams);
+                        setListOtherTeams(listOtherTeam);
                     })
                 
                 return res.data
@@ -58,7 +55,7 @@ export const ChatScreen = () => {
             .catch(error=>{
                 console.log(error)
             })
-    }, [isReload])
+    }, [isReload, filter])
     return (
         <View style={{position: 'relative', flex:1}}>
 
@@ -105,8 +102,8 @@ export const ChatScreen = () => {
                 renderItem={(item)=>{
                     return (
                         mode?
-                        <TouchableOpacity onPress={()=>{navigation.navigate(SocialString, {team: {...item}})}} style = {{zIndex: -1}}>
-                            <TeamComponent type={filter==="YOURS"?'JOINED':"HAVENT_JOINED"} ownerId={item.item.ownerId} id={item.index} name={item.item.name} slug={item.item.slug} visibility={item.item.visibility} user={item.item.users}/>
+                        <TouchableOpacity onPress={()=>{navigation.navigate(SocialString, {team: {...item}, isReload: isReload, setIsReload: setIsReload})}} style = {{zIndex: -1}}>
+                            <TeamComponent setListOtherTeams = {setListOtherTeams} type={filter==="YOURS"?'JOINED':"HAVENT_JOINED"} ownerId={item.item.ownerId} id={item.item.id} name={item.item.name} slug={item.item.slug} visibility={item.item.visibility} user={item.item.users}/>
                             <Space space={12}/>
                         </TouchableOpacity>:
                         <TouchableOpacity>

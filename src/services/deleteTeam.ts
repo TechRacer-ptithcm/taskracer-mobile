@@ -13,6 +13,7 @@ type DeleteTeamResponse = {
 };
 
 export const deleteTeam = ({ slug }: DeleteTeamParam) => {
+  console.log('delete', slug)
   const axiosInstance = axiosInitialization();
   return axiosInstance
     .delete<DeleteTeamResponse>(`/social/team/${slug}`)
