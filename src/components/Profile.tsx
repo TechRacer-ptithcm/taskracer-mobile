@@ -11,9 +11,15 @@ import MailIcon from "../assets/icons/MailIcon"
 import LockIcon from "../assets/icons/LockIcon"
 import { LinearGradient } from "expo-linear-gradient"
 import { useAppDispatch } from "../redux/hooks"
-import { useNavigation } from "@react-navigation/native"
+import { useFocusEffect, useNavigation } from "@react-navigation/native"
 import { AuthStackString } from "../constants/screen"
 import { resetAuth } from "../redux/slices/authSlice"
+import { useEffect, useState } from "react"
+import { getUserInfo, GetUserInfoData } from "../services/getUserInfo"
+import { useSelector } from "react-redux"
+import { tokenSelector } from "../redux/selectors/authSelectors"
+import { getCurrentData, GetCurrentDataData } from "../services/getCurrentUserData"
+import { AvataBaseWord } from "./AvataBaseWord"
 
 type ProfileProps = {
     avata: string,
@@ -24,12 +30,24 @@ type ProfileProps = {
 
 export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps)=>{
     const navigation = useNavigation()
+    const accessToken = useSelector(tokenSelector);
+    const [user, setUser] = useState<GetCurrentDataData|undefined>(undefined)
     const dispatch = useAppDispatch()
+    useEffect(()=>{
+        getCurrentData()
+            .then(res=>{
+                console.log("Get user successfully");
+                setUser(res.data)
+            })
+            .catch(error=>{
+                console.log('Get user error with message:', error);
+            })
+    }, [])
     return (
         <View>
             <View style = {{width: '100%', paddingLeft: AppPadding, paddingRight: AppPadding, marginTop: 36, alignItems: 'center'}}>
                 <View style = {{position: 'relative'}}>
-                    <Image source={{uri: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJWKy9Ecg0gi9jqAhPMBeaSQ72_lx_A3HLOQ&s'}} style = {{width:100, height: 100, borderRadius:100}}/>
+                    <AvataBaseWord full_name={user?.user.name?user.user.name:"Anonimous"} customSize={100}/>
                     <View style = {{position: 'absolute', justifyContent: 'center', alignItems: 'center', bottom: -36, right: -30, transform: [{scale: 0.5}]}}>
                         <SilverIIcon width={100} height={100}/>
                     </View>
@@ -43,7 +61,7 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     start={{x: 1, y: 1}}
                     end={{x: 0, y: 1}}
                 >
-                    <Title title={rank} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={user?.rankData.rank} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <Space space={8}/>
                     <SilverIIcon width={100} height={100}/>
                 </LinearGradient>
@@ -54,8 +72,8 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     start={{x: 0, y: 0}}
                     end={{x: 1, y: 1}}
                 >
-                    <Title title={'Today'} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
-                    <Title title={'2h35m'} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={'Streak'} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={`${user?.user.streak}`} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <FireIcon width={60} height={60}/>
                 </LinearGradient>
             </View>
@@ -68,7 +86,6 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     <MailIcon width={28} height={28} color={GrayColor}/>
                 } onPress={()=>{}}/>
                 <Space space={12}/>
-
                 <InfoTagEditable title={'Password'} icon={
                     <LockIcon width={28} height={28} color={GrayColor}/>
                 } onPress={()=>{}}/>

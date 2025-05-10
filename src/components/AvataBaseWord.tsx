@@ -8,12 +8,13 @@ type AvataBaseWordParams = {
 }
 
 export const AvataBaseWord = ({full_name, customSize}: AvataBaseWordParams) => {
-  const userNameShortHand = (full_name ? full_name : 'Owner')
-    .split(' ')
-    .map(word => {
-      return word[0];
-    })
-    .join('');
+  const words = full_name?full_name.split(" "):["Owner"];
+  let userNameShortHand = "Owner"
+  if (words.length<2){
+    userNameShortHand = words[0][0];
+  } else{
+    userNameShortHand = words[words.length-2][0]+ words[words.length-1][0]
+  }
   return (
     <View
       style={{

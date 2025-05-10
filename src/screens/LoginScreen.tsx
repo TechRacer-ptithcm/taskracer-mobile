@@ -48,7 +48,6 @@ export const LoginScreen = () => {
                             dispatch(setToken(res.data.access_token));
                             dispatch(setLoading(false))
                             navigation.navigate(MainStackString)
-                            Alert.alert(res.data.id, 'ahih');
                         }
                     }
                     return res

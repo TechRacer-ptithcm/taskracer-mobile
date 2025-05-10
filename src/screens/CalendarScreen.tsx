@@ -90,7 +90,7 @@ export const CalendarScreen = () => {
     const flatListRef = useRef<FlatList>(null);
     const [initialScrollCalendarView, setInitialScrollCalendarView] = useState(362)
     return (
-        <View key = {calendarMode} style = {{padding: AppPadding, paddingTop: 32, position: 'relative'}} onLayout={(event)=>{
+        <View key = {calendarMode} style = {{padding: AppPadding, paddingTop: 32, backgroundColor: 'blue', position: 'relative'}} onLayout={(event)=>{
                 let setValue = event.nativeEvent.layout.width;
                 if (calendarMode === '3days'){
                     setValue = event.nativeEvent.layout.width / 3
@@ -101,7 +101,7 @@ export const CalendarScreen = () => {
             }}
         >
             <OverlayBubbleAnimation/>
-            <View style = {{height: 100, justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
+            <View style = {{justifyContent: 'space-between', flexDirection: 'row', alignItems: 'center'}}>
                 <View style = {{flexDirection: 'row', flex: 1, alignItems: 'center'}}>
                     <View style = {{marginTop: 6}}>
                         <Title color='#000' size={60} title={(new Date()).getDate().toString()} type={true} horizontalPadding={0} verticalPadding={0}/>
@@ -196,7 +196,7 @@ export const CalendarScreen = () => {
                 }}
                 swipeEnabled={false}
                 events={events} 
-                height={height-90} 
+                height={height-160} 
                 mode={calendarMode || 'day'} 
                 showTime={true} 
                 hideNowIndicator={false} 

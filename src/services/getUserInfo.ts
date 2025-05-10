@@ -10,7 +10,7 @@ type GetUserInfoResponse = {
   status: boolean;
   data: GetUserInfoData;
 };
-type GetUserInfoData = {
+export type GetUserInfoData = {
   id: string;
   tier: string;
   streak: number;

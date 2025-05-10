@@ -7,57 +7,41 @@ import { UserTopWorld } from "./UserTopWorld"
 import { BronzeII, SilverI } from "../constants/rank"
 import { LinearGradient } from "expo-linear-gradient"
 import { TopRankElement } from "./TopRankElement"
-const listUserTopRank = [
-    {
-        top: 1,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 2,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 3,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 4,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 5,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 6,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-    {
-        top: 7,
-        avata: "string",
-        name: 'Meo Meo',
-        timeMilisecond: 123, 
-    },
-]
+import { useEffect, useState } from "react"
+import { getLeaderBoard, GetLeaderBoardData } from "../services/getLeaderBoard"
+import { getCurrentData } from "../services/getCurrentUserData"
+import { getPercentTop } from "../services/getPercentTop"
+
 
 export const World = ()=>{
+    const [leaderBoard, setLeaderBoard] = useState<GetLeaderBoardData[]>([]);
+    const [top, setTop] = useState<number>(0);
+    
+    useEffect(()=>{
+        getLeaderBoard()
+            .then(res=>{
+                setLeaderBoard(res.data);
+                console.log("Get leader board successully");
+            })
+            .catch(error=>{
+                console.log("Get leaderboard error with message:", error)
+            })
+    }, [])
+    useEffect(()=>{
+                getPercentTop()
+                    .then(res=>{
+                        console.log("Get user successfully");
+                        setTop(res.data.top)
+                    })
+                    .catch(error=>{
+                        console.log('Get user error with message:', error);
+                    })
+            }, [])
     return (
         <View style = {{marginLeft: AppPadding, marginRight: AppPadding}}>
             <View style = {{flexDirection: 'row', padding:12, borderRadius: 20, backgroundColor: '#fbd4a4', alignItems: 'center', justifyContent: 'center', marginBottom: AppPadding}}>
                 <View style = {{padding: 12, borderRadius: 20, backgroundColor: NotificationColor, justifyContent: 'center', alignItems: 'center', aspectRatio: 1}}>
-                    <Title title={'#38'} color={WhiteColor} size={28} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={`#${top}`} color={WhiteColor} size={28} type={true} horizontalPadding={0} verticalPadding={0}/>
                 </View>
                 <Space space={12}/>
                 <View style = {{flex: 1}}>
@@ -65,7 +49,6 @@ export const World = ()=>{
                 </View>
             </View>
             <ScrollView showsVerticalScrollIndicator={false}>
-
                 <LinearGradient 
                     colors={['#A0C9FF', '#3786EB', '#3786EB']} 
                     start={{x: 0.5, y: 0}}
@@ -74,13 +57,13 @@ export const World = ()=>{
                 >
                     <View style={{justifyContent: 'center', alignItems: 'center'}}>
                         <View style = {{transform: [{translateY: 25}]}}>
-                            <UserTopWorld avata="" name="Meo Meo" timeMilisecond={12} rank={SilverI} top={1}/>
+                            <UserTopWorld name={leaderBoard[0]?.user?.name?leaderBoard[0].user.name: "Anonimous User"} rank={SilverI} top={1} score={leaderBoard[0]?.score?leaderBoard[0].score: 0}/>
                         </View>
                         <View style = {{ top: 0, flexDirection: 'row', width: '100%', justifyContent: 'space-between'}}>
                             <View style = {{transform: [{translateY: -40}]}}>
-                                <UserTopWorld avata="" name="Meo Meo" timeMilisecond={12} rank={SilverI} top={2}/>
+                                <UserTopWorld name={leaderBoard[1]?.user?.name?leaderBoard[1].user.name: "Anonimous User"} rank={SilverI} top={2} score={leaderBoard[1]?.score?leaderBoard[0].score: 0}/>
                             </View>
-                            <UserTopWorld avata="" name="Meo Meo" timeMilisecond={12} rank={SilverI} top={3}/>
+                            <UserTopWorld name={leaderBoard[2]?.user?.name?leaderBoard[2].user.name: "Anonimous User"} rank={SilverI} top={3} score={leaderBoard[2]?.score?leaderBoard[0].score: 0}/>
                         </View>
                     </View>
                     <View style={{justifyContent: 'space-between', alignItems: 'flex-end', position: 'relative', flexDirection: 'row'}}>
@@ -93,12 +76,11 @@ export const World = ()=>{
                         <LinearGradient colors={['#FF909A', '#C77178']} style = {{ width: 150, height: 50, justifyContent: 'center', alignItems: 'center', borderTopLeftRadius: 50, borderTopRightRadius: 50, borderBottomRightRadius: 50}}>
                             <Title title="3" color={WhiteColor} size={40} type={true} horizontalPadding={0} verticalPadding={0}/>
                         </LinearGradient>
-                        
                     </View>
                 </LinearGradient>
                 {
-                    listUserTopRank.map((item, index)=>{
-                        return <TopRankElement key={Math.random()*100} top={item.top} avata={item.avata} name={item.name} timeMilisecond={item.timeMilisecond}/>
+                    leaderBoard.map((item, index)=>{
+                        return <TopRankElement key={Math.random()*100} top={index+1} name={item.user.name} score={item?.score}/>
                     })
                 }
                 <Space space={300}/>

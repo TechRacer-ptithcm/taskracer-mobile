@@ -3,7 +3,7 @@ import { OverlayBubbleAnimation } from '../components/OverlayBubbleAnimation';
 import { Title } from '../components/Title';
 import { BackgroundColor, GrayColor, PrimaryColorBlue, WhiteColor } from '../assets/color';
 import { AppPadding } from '../constants/spaces';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import SearchIcon from '../assets/icons/SearchIcon';
 import { Space } from '../components/Space';
 import { Chat } from '../components/Team';
@@ -11,10 +11,37 @@ import { Post } from '../components/Post';
 import { Profile } from '../components/Profile';
 import { BronzeI, SilverI } from '../constants/rank';
 import { World } from '../components/World';
+import { getUserInfo, GetUserInfoData } from '../services/getUserInfo';
+import { useSelector } from 'react-redux';
+import { tokenSelector } from '../redux/selectors/authSelectors';
+import { getCurrentData } from '../services/getCurrentUserData';
 
 
 export const RankScreen = () => {
     const [mode, setMode] = useState(true);
+    const accessToken = useSelector(tokenSelector);
+    const [user, setUser] = useState<GetUserInfoData| undefined>(undefined);
+    const [top, setTop] = useState<string>('0');
+    useEffect(()=>{
+        getUserInfo({token: accessToken})
+            .then(res=>{
+                setUser(res.data.data)
+                console.log(res.data.data)
+            })
+            .catch(error=>{
+                console.log("Get user error with message:", error);
+            })
+    }, [])
+    useEffect(()=>{
+            getCurrentData()
+                .then(res=>{
+                    console.log("Get user successfully");
+                    setTop(res.data.rankData.rank)
+                })
+                .catch(error=>{
+                    console.log('Get user error with message:', error);
+                })
+        }, [])
     return (
         <View style={{position: 'relative', flex:1}}>
             <OverlayBubbleAnimation/>
@@ -29,7 +56,7 @@ export const RankScreen = () => {
                 </View>
             </View>
             {mode ? 
-            <Profile avata='' userName='Alexanbeo Grandmother' rank={SilverI} focusTimeMilisec={(new Date()).valueOf()}/>
+            <Profile avata='' userName={user?.name?user.name:"Owner"} rank={SilverI} focusTimeMilisec={(new Date()).valueOf()}/>
                 : 
             <World/>
             }

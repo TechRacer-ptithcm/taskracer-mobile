@@ -20,7 +20,7 @@ export const InfoTagEditable = ({title, icon, onPress}:InfoTagEditableProps)=>{
 
                 <Title title={title} color={GrayColor} size={18} type ={true} horizontalPadding={0} verticalPadding={0}/>
             </View>
-            <EditIcon width={32} height={32} color={GrayColor}/>
+            {/* <EditIcon width={32} height={32} color={GrayColor}/> */}
         </TouchableOpacity>
     )
 }
