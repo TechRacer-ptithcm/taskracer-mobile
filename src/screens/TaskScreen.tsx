@@ -7,7 +7,7 @@ import { Title } from '../components/Title';
 import { BackgroundColor, GrayColor, PrimaryColorBlue, PrimaryColorRed, WhiteColor } from '../assets/color';
 import { Space } from '../components/Space';
 import BellIcon from '../assets/icons/BellIcon';
-import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { getAllTasks, GetAllTasksData } from '../services/getAllTasks';
 import { useSelector } from 'react-redux';
 import { tokenSelector } from '../redux/selectors/authSelectors';
@@ -46,6 +46,7 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     const accessToken = useSelector(tokenSelector);
     const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
     const [listTodo, setListTodo] = useState<GetAllTasksData[]>([]);
+    const taskMap = useRef(new Map()).current;
     const [create, setCreate] = useState<"TODO"|"TASK"|"CLOSED"|"OPENED">('CLOSED');
     const [showTaskInfo, setShowTaskInfo] = useState(false);
     const dispatch = useAppDispatch();
@@ -55,7 +56,8 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     }, [accessToken])
 
     function handleClickTask(taskId: string){
-        navigation.navigate(TaskInfoString, {taskId: taskId});
+        const subtasks = taskMap.get(taskId)
+        navigation.navigate(TaskInfoString, {taskId: taskId, listSubTasks: taskMap.get(taskId)});
     }
     useFocusEffect(
         useCallback(()=>{
@@ -72,8 +74,21 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
                             listTodo.push(task);
                         }
                     });
-                    setListTask(listTask);
-                    setListTodo(listTodo);
+                    res.data.forEach((item, index)=>{
+                        if (item.parent === null){
+                            taskMap.set(item.id, []);
+                        } else if (taskMap.get(item.parent)){
+                            taskMap.set(item.parent, [...taskMap.get(item.parent), item])
+                        } else {
+                            taskMap.set(item.parent, item)
+                        }
+                    })
+                    console.log(taskMap.keys)
+                    for (let [key, value] of taskMap) {
+                        console.log(`${key} = ${value}`);
+                      }
+                    setListTask(listTask.filter(item=>item.parent===null));
+                    setListTodo(listTodo.filter(item=>item.parent===null));
                 })
                 .catch((err)=>{
                     console.log("Get all tasks error: ", err);

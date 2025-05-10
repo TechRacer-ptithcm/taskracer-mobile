@@ -184,7 +184,7 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                             </View>
                         }
                     </View>
-                    <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>
+                    {/* <View style = {{flexDirection: 'row', width: '100%', alignItems:'center', marginTop: 16, justifyContent: 'space-between', position: 'relative'}}>
                         <Title title='Assign To: ' size={16} color={GrayColor} type={true} verticalPadding={0} horizontalPadding={0}/>
                         <TouchableOpacity style = {{flex: 1, alignItems: 'center', flexDirection: 'row', justifyContent: 'flex-end'}} onPress={()=>{
                             setShowAssign(!showAssign);
@@ -206,7 +206,7 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                             showAssign &&
                             <InputAndButtonSubmit placeholder="Your coworker email" valueInput={assignFrValue} onValueChange={setAssignFrValue} onSubmit={()=>{}}/>
                         }
-                    </View>
+                    </View> */}
                     <Space space={60}/>
                 </View>
                 <Space space={100}/>

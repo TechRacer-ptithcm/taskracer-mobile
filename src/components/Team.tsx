@@ -22,10 +22,11 @@ type TeamProps = {
     ownerId: string,
     visibility: string,
     user: string[],
-    setListOtherTeams: React.Dispatch<React.SetStateAction<Team[]>>
+    setListOtherTeams: React.Dispatch<React.SetStateAction<Team[]>>,
+    listOtherTeams: Team[]
 }
 
-export const TeamComponent = ({type, id, slug, name, visibility, user, setListOtherTeams} : TeamProps)=>{
+export const TeamComponent = ({type, id, slug, name, visibility, user, setListOtherTeams, listOtherTeams} : TeamProps)=>{
     const [admin, setAdmin] = useState<User| undefined>(undefined)
     const token = useSelector(tokenSelector);
 
@@ -43,6 +44,9 @@ export const TeamComponent = ({type, id, slug, name, visibility, user, setListOt
         joinTeam({slug: slug})
             .then(res=>{
                 console.log('Join team successfully!')
+                setListOtherTeams(listOtherTeams.filter(team=>{
+                    return team.id!==id;
+                }))
                 return res.data.message
             })
             .catch(error=>{

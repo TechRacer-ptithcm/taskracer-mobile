@@ -103,7 +103,7 @@ export const ChatScreen = () => {
                     return (
                         mode?
                         <TouchableOpacity onPress={()=>{navigation.navigate(SocialString, {team: {...item}, isReload: isReload, setIsReload: setIsReload})}} style = {{zIndex: -1}}>
-                            <TeamComponent setListOtherTeams = {setListOtherTeams} type={filter==="YOURS"?'JOINED':"HAVENT_JOINED"} ownerId={item.item.ownerId} id={item.item.id} name={item.item.name} slug={item.item.slug} visibility={item.item.visibility} user={item.item.users}/>
+                            <TeamComponent listOtherTeams = {listOtherTeams} setListOtherTeams = {setListOtherTeams} type={filter==="YOURS"?'JOINED':"HAVENT_JOINED"} ownerId={item.item.ownerId} id={item.item.id} name={item.item.name} slug={item.item.slug} visibility={item.item.visibility} user={item.item.users}/>
                             <Space space={12}/>
                         </TouchableOpacity>:
                         <TouchableOpacity>

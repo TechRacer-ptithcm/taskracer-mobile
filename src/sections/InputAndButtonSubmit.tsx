@@ -15,8 +15,8 @@ type InputAndButtonSubmitParams = {
 export const InputAndButtonSubmit = ({placeholder, valueInput, onValueChange, onSubmit}: InputAndButtonSubmitParams)=>{
     return (
         <View style = {{transform: [{translateY: 60}], width: '100%', position: 'absolute', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', backgroundColor: BackgroundColor, borderRadius: 12, paddingLeft: 12, paddingRight: 12}}>
-            <View style = {{flex: 1}}>
-                <Input placeholder={placeholder} type={InputNormal} value={valueInput} onChangeText={(value)=>onValueChange(value)}/>
+            <View style = {{flex: 1, maxHeight: 80}}>
+                <Input placeholder={placeholder} type={InputNormal} value={valueInput} onChangeText={(value)=>onValueChange(value)} />
             </View>
             <Space space={12}/>
             <View>

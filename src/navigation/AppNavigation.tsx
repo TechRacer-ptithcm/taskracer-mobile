@@ -10,7 +10,7 @@ import { AuthStackString, MainStackString, SocialString, TaskInfoString, TaskSta
 import { TaskNavigator } from './TaskNavigation';
 import { TaskInfoScreen } from '../screens/TaskInfoScreen';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { Task, View } from 'react-native';
 import { getItem } from '../configs/localStorage';
 import { TeamScreen } from '../screens/TeamScreen';
 import { TeamNavigation } from './TeamNavigation';
@@ -18,7 +18,7 @@ import { Team } from '../models/Team';
 
 export type AppStackParamList = {
     [AuthStackString]: undefined;
-    [TaskInfoString]: {taskId: string};
+    [TaskInfoString]: {taskId: string, listSubTasks: Task[]};
     [MainStackString]: undefined;
     [SocialString]: {team: Team, isReload: boolean, setIsReload: React.Dispatch<React.SetStateAction<boolean>>}
     

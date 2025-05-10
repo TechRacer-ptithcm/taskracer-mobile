@@ -19,11 +19,12 @@ import { tokenSelector } from "../redux/selectors/authSelectors"
 import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackParamList } from "../navigation/AppNavigation"
 import { deleteTeam } from "../services/deleteTeam"
+import { leaveTeam } from "../services/leaveTeam"
 
 
 export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navigation: any; })=>{
     // const [listPost, setListPost] = useState<>([]);
-    const team = route.params.team.item
+    const team = route.params?.team.item
     const isReload = route.params?.isReload;
     const setIsReload = route.params?.setIsReload;
     // const {team} = route.params
@@ -91,6 +92,17 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                 console.log("Delete team error with message:", error);
             })
     }, [])
+    const handleLeaveClick = useCallback(()=>{
+        leaveTeam({slug: team?.slug})
+            .then(res=>{
+                console.log("Leave Team successfully");
+                setIsReload(!isReload)
+                navigation.goBack()
+            })
+            .catch(error=>{
+                console.log("Leave Team error with message:", error)
+            })
+    }, [])
     return (
         <View style = {{flex: 1, position: 'relative'}}>
             <OverlayBubbleAnimation/>
@@ -149,9 +161,7 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                                     {
                                         type == 'YOURS' &&
 
-                                        <TouchableOpacity style = {{padding: 6, paddingLeft: 0, paddingRight: 0}} onPress={()=>{
-
-                                        }}>
+                                        <TouchableOpacity style = {{padding: 6, paddingLeft: 0, paddingRight: 0}} onPress={handleLeaveClick}>
                                             <Text>
                                                 Leave Group
                                             </Text>
