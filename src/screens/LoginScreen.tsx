@@ -49,7 +49,6 @@ export const LoginScreen = () => {
                             dispatch(setLoading(false))
                             navigation.navigate(MainStackString)
                             Alert.alert(res.data.id, 'ahih');
-                            dispatch(setUserId(res.data.id))
                         }
                     }
                     return res

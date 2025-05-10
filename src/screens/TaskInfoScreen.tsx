@@ -37,6 +37,7 @@ import { getUserInfo } from "../services/getUserInfo"
 import { InputAndButtonSubmit } from "../sections/InputAndButtonSubmit"
 import { assignUserToTask } from "../services/assignUserToTask"
 import { removeUserOutOfTask } from "../services/removeUserOutOfTask"
+import { CreateNewTaskSection } from "../sections/CreateNewTaskSection"
 
 
 export type TaskInfoScreenParams = {
@@ -46,8 +47,11 @@ export type TaskInfoScreenParams = {
 export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; navigation: any; }) => {
     console.log(route.params)
     const taskId = route.params?.taskId;
-    const listSubtask = route.params?.listSubTasks;
+    const [listSubtask, setListSubtask] = useState(route.params?.listSubTasks);
+    const taskMap = route.params?.taskMap;
     const accessToken = useSelector(tokenSelector);
+    const [openStatus, setOpenStatus] = useState<"TASK"|"TODO"|"CLOSED"|"OPENED">("CLOSED");
+
     const [originalTaskValue, setOriginalTaskValue] = useState({
         content: '',
         startTime: 0,
@@ -416,15 +420,30 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     </>
                     }
                     <View>
-                        <Title title={"Sub tasks"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
+                        <View style = {{flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
+
+                            <Title title={"Sub tasks"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
+                            <TouchableOpacity onPress={()=>{
+                                Alert.alert("Ahihi");
+                                setOpenStatus("TASK");
+                            }}>
+                                <Title title={"Add"} size={12} color={PrimaryColorRed} type={true} horizontalPadding={0} verticalPadding={0}/>
+                            </TouchableOpacity>
+                        </View>
                         <Space space={8}/>
                         <ScrollView>
                             {
-                                listSubtask.map((item, index)=>{
+                                listSubtask?.map((item, index)=>{
                                     return (
-                                        
-                                        <TaskSmall title={item.content} ownerName={item.owner} startTime={item.startAt} endTime={item.dueAt} type={index%2===0} onClick={() => {}}/>
+                                        <View key={index}>
 
+                                            <TaskSmall  title={item.content} ownerName={item.owner} startTime={item.startAt} endTime={item.dueAt} type={index%2===0} onClick={() => {
+    
+                                                navigation.push(TaskInfoString, {taskId: item.id, listSubTasks: taskMap.get(item.id), taskMap: taskMap})
+                                            }}/>
+                                            <Space space={6}/>
+                                        </View>
+                                        
                                     )
                                 })
                             }
@@ -464,6 +483,10 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     {/* <View style = {{width: '80%'}}>
                     </View> */}
                 </View>
+            }
+            {
+                openStatus!=="CLOSED" &&
+                <CreateNewTaskSection setOpenStatus={setOpenStatus} openStatus={openStatus} parent={taskId} setCurrentListTask={setListSubtask} currentListTask={listSubtask}/>
             }
         </View>
     )

@@ -1,7 +1,9 @@
 import { axiosInitialization } from "../configs/axiosInstance";
+import { GetAllTasksData } from "./getAllTasks";
 
 type CreateTaskParam = {
   accessToken: string;
+  parent?: string|null;
   type: string;
   content: string;
   priority: string;
@@ -16,29 +18,14 @@ type CreateTaskResponse = {
   message: string;
   code: string;
   status: boolean;
-  data: CreateTaskData;
+  data: GetAllTasksData;
 };
 
-type CreateTaskData = {
-  id: string;
-  parent_id: string;
-  resource_type: string;
-  resource_id: string;
-  owner: string;
-  content: string;
-  priority: string;
-  description: string;
-  start_at: string;
-  due_at: string;
-  status: string;
-  created_at: Date;
-  updated_at: Date;
-  deleted_at: Date;
-};
 
 export const createTask = ({
   accessToken,
   type,
+  parent = null, 
   content,
   priority,
   description,
@@ -48,6 +35,7 @@ export const createTask = ({
   taskType
 }: CreateTaskParam) => {
   console.log({
+    parent,
     type,
     content,
     priority,
@@ -60,6 +48,7 @@ export const createTask = ({
   return axiosInstance
     .post<CreateTaskResponse>(`/content/task`, {
       type,
+      parent,
       content,
       priority,
       description,

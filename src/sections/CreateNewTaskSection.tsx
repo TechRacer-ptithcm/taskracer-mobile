@@ -21,15 +21,21 @@ import { tokenSelector } from "../redux/selectors/authSelectors"
 import { ClockSetTime } from "../components/ClockSetTime"
 import { ListStatus } from "./ListStatus"
 import { Status } from "../components/Status"
+import CloseIcon from "../assets/icons/CloseIcon"
+import { Task } from "../models/Task"
+import { GetAllTasksData } from "../services/getAllTasks"
 
 
 
 type CreateNewTaskSectionParams ={
     openStatus: 'TODO'|'TASK'|'CLOSED'|'OPENED';
     setOpenStatus: React.Dispatch<React.SetStateAction<'TODO'|'TASK'|'CLOSED'|'OPENED'>>;
+    parent?:string
+    setCurrentListTask: React.Dispatch<React.SetStateAction<GetAllTasksData[]>>;
+    currentListTask: GetAllTasksData[];
 }
 
-export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskSectionParams)=>{
+export const CreateNewTaskSection = ({openStatus, setOpenStatus, parent, setCurrentListTask, currentListTask}: CreateNewTaskSectionParams)=>{
     const translateSectionValue: Animated.Value = useAnimatedValue(1000);
     const [title, setTitle] = useState("")
     const [startDate, setStartDate] = useState(new Date());
@@ -55,10 +61,11 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
         } else if (description==""){
             Alert.alert("Description cannot be blank");
         } else{
-            return await createTask({accessToken, type: 'USER', content: title, priority: priority, description, status: status, startAt: openStatus=="TASK"?startDate.toISOString(): undefined, dueAt: endDate.toISOString(), taskType: openStatus})
+            return await createTask({accessToken, parent: parent?parent:null ,type: 'USER', content: title, priority: priority, description, status: status, startAt: openStatus=="TASK"?startDate.toISOString(): undefined, dueAt: endDate.toISOString(), taskType: openStatus})
                 .then(res=>{
                     console.log(res.data.content);
                     setOpenStatus('CLOSED');
+                    setCurrentListTask([...currentListTask, res.data])
                 })
                 .catch(error=>{
                     console.log("Create task error with message:", error);
@@ -98,7 +105,12 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
             <ScrollView showsVerticalScrollIndicator={false}>
                 <View style = {{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
                     <Title title={openStatus=="TASK"?"New Task": "New Todo"} color={GrayColor} size={36} type={true} horizontalPadding={0} verticalPadding={24} center={false}/>
-                    <Button title="Create" color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{handleCreateAction()}}/>
+                    <TouchableOpacity onPress={()=>{
+                        setOpenStatus('CLOSED')
+                    }}>
+                        <CloseIcon width={30} height={30} color={PrimaryColorRed}/>
+
+                    </TouchableOpacity>
                 </View>
                 <View style = {{marginTop: 36}}>
                     <Input type={InputNormal} placeholder={openStatus=="TASK"?"Task title": "Todo title"} value={title} onChangeText={setTitle}/>
@@ -208,6 +220,9 @@ export const CreateNewTaskSection = ({openStatus, setOpenStatus}: CreateNewTaskS
                         }
                     </View> */}
                     <Space space={60}/>
+                </View>
+                <View style = {{width: "30%", alignSelf: 'center'}}>
+                    <Button title="Create" color={PrimaryColorBlue} fullWidth={false} disable={false} onClick={()=>{handleCreateAction()}}/>
                 </View>
                 <Space space={100}/>
             </ScrollView>

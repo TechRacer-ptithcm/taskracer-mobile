@@ -24,6 +24,7 @@ export type GetAllTasksData = {
   dueAt: string;
   status: string;
   users: any;
+  taskType: string
 };
 
 export const getAllTasks = ({ accessToken }: GetAllTasksParam) => {

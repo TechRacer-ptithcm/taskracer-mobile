@@ -33,9 +33,6 @@ type TaskScreenProps = {
 }
 
 export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
-
-
-
     userName = "Alex Gi";
     var currentHour = (new Date()).getHours()
     var nextDay = new Date();
@@ -55,9 +52,8 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
         console.log(accessToken);
     }, [accessToken])
 
-    function handleClickTask(taskId: string){
-        const subtasks = taskMap.get(taskId)
-        navigation.navigate(TaskInfoString, {taskId: taskId, listSubTasks: taskMap.get(taskId)});
+    const handleClickTask = (taskId: string)=>{
+        navigation.navigate(TaskInfoString, {taskId: taskId, listSubTasks: taskMap.get(taskId), taskMap: taskMap});
     }
     useFocusEffect(
         useCallback(()=>{
@@ -173,19 +169,23 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
             </View>
             {
                 (create=='TODO' || create=='TASK') &&
-                <CreateNewTaskSection openStatus={create} setOpenStatus = {setCreate}/>
+                <CreateNewTaskSection openStatus={create} setOpenStatus = {setCreate} setCurrentListTask={create==="TODO"?setListTodo:setListTask} currentListTask={create==='TODO'?listTodo:listTask}/>
             }
-            <View style = {{position: 'absolute', bottom: 10, backgroundColor: create=='CLOSED'? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', elevation: 4}}>
-                {
-                    create=="OPENED" &&
-                    <View style = {{position: 'absolute', top: -60}}>
-                        <PopUpAddButton onClick={setCreate}/>
-                    </View>
-                }
-                <TouchableOpacity onPress={()=>{create=="CLOSED"? setCreate('OPENED'): setCreate('CLOSED')}}>
-                    <Title size={40} color={WhiteColor} title={create=='CLOSED'?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
-                </TouchableOpacity>
-            </View>
+            {
+                create!=="TASK" && create!=="TODO" &&
+
+                <View style = {{position: 'absolute', bottom: 10, backgroundColor: create=='CLOSED'? PrimaryColorBlue: PrimaryColorRed, width: 60, height: 60, borderRadius: 100, alignSelf: 'center', justifyContent: 'center', alignItems: 'center', elevation: 4}}>
+                    {
+                        create=="OPENED" &&
+                        <View style = {{position: 'absolute', top: -60}}>
+                            <PopUpAddButton onClick={setCreate}/>
+                        </View>
+                    }
+                    <TouchableOpacity onPress={()=>{create=="CLOSED"? setCreate('OPENED'): setCreate('CLOSED')}}>
+                        <Title size={40} color={WhiteColor} title={create=='CLOSED'?'+':'x'} type={false} horizontalPadding={0} verticalPadding={0} center={true}/>
+                    </TouchableOpacity>
+                </View>
+            }
         </View>
     );
 };
