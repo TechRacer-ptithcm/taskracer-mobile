@@ -1,8 +1,8 @@
 import { axiosInitialization } from "../configs/axiosInstance";
 
 type AssignUserToTaskParam = {
+    email: string,
     taskId: string,
-    userId: string,
 };
 
 type AssignUserToTaskResponse = {
@@ -17,13 +17,13 @@ type AssignUserToTaskData = {
 };
 
 export const assignUserToTask = ({
-    taskId,
-    userId
+    email,
+    taskId
 }: AssignUserToTaskParam) => {
   const axiosInstance = axiosInitialization();
   return axiosInstance
     .post<AssignUserToTaskResponse>(`/content/task/assign-user`, {
-        taskId, userId
+        email, taskId
     })
     .then((res) => { 
       return res.data;

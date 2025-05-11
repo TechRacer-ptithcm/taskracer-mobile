@@ -20,6 +20,7 @@ import { NativeStackScreenProps } from "@react-navigation/native-stack"
 import { AppStackParamList } from "../navigation/AppNavigation"
 import { deleteTeam } from "../services/deleteTeam"
 import { leaveTeam } from "../services/leaveTeam"
+import { GetAllPostOfTeamContent, getAllPostsOfTeam } from "../services/getAllPostOfTeam"
 
 
 export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navigation: any; })=>{
@@ -33,41 +34,7 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
     const accessToken = useSelector(tokenSelector);
     const [type, setType] = useState<'OWN'|'YOURS'|'OTHER'|undefined>('OWN')
     const [showMore, setShowMore] = useState(false);
-    const listPost = [
-        {
-            id: '1',
-            user_id: '1',
-            team_id: '1',
-            content: 'string',
-            file_attachment_url: "string",
-            like_count: 2
-        },
-        {
-            id: '2',
-            user_id: '2',
-            team_id: '2',
-            content: 'string',
-            file_attachment_url: "string",
-            like_count: 2
-        },
-        {
-            id: '3',
-            user_id: '3',
-            team_id: '3',
-            content: 'string',
-            file_attachment_url: "string",
-            like_count: 2
-        },
-        {
-            id: '4',
-            user_id: '4',
-            team_id: '4',
-            content: 'string',
-            file_attachment_url: "string",
-            like_count: 2
-        },
-
-    ]
+    const [listPost, setListPost] = useState<GetAllPostOfTeamContent[]>([])
     useEffect(()=>{
         getUserInfo({token: accessToken})
             .then(res=>{
@@ -78,6 +45,15 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                 } else{
                     setType('OTHER')
                 }
+            })
+    }, [])
+    useEffect(()=>{
+        getAllPostsOfTeam({teamId: team.id})
+            .then(res=>{
+                setListPost(res.data.content)
+            })
+            .catch(error=>{
+
             })
     }, [])
     const handleDeleteClick = useCallback(()=>{
@@ -176,13 +152,15 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
             <FlatList
                 style = {{
                     zIndex: 1,
-                    paddingTop: 130
+                    // paddingTop: 130,
+                    marginTop: "20%"
                 }}
                 data={listPost}
                 renderItem={(item)=>{
+                    console.log(item.item.fileAttachmentUrl[0].name)
                     return (
                         <View style ={{margin: AppPadding/2, elevation: 5, borderRadius: 20, overflow: 'hidden'}}>
-                            <Post content="Ahihi" fileAttachment="" likeCount={4} createAt="12"/>
+                            <Post content={item.item.content} fileAttachment="" likeCount={4} createAt="12" userId={item.item.userId} fileName={item.item.fileAttachmentUrl[0].name}/>
                         </View>
                     )
                 }}
@@ -197,7 +175,6 @@ export const TeamScreen = ({route}: { route: RouteProp<AppStackParamList>; navig
                     </View>
                 }
             />
-
         </View>
     )
 }

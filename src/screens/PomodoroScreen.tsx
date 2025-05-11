@@ -166,7 +166,7 @@ export const PomodoroScreen = () => {
     }, [startPomo, focusTime, breakTime, focusTimeState, breakTimeState]);
     return (
         <View style = {{flex: 1, position: 'relative', justifyContent:'center', alignItems:'center'}}>
-            <View style = {{flexDirection:'row', position: 'absolute', top:80, justifyContent: 'space-between', width: '100%', paddingLeft: AppPadding, alignItems: 'center', paddingRight: AppPadding}}>
+            <View style = {{flexDirection:'row', position: 'absolute', top:80, justifyContent: 'space-between', width: '100%', paddingLeft: AppPadding, alignItems: 'center', paddingRight: AppPadding, zIndex: 100}}>
                 <Title title='Pomodoro' size={48} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                 <TouchableOpacity onPress={()=>{
                     if (!startPomo){

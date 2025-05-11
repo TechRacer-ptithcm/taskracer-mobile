@@ -20,6 +20,7 @@ import { useSelector } from "react-redux"
 import { tokenSelector } from "../redux/selectors/authSelectors"
 import { getCurrentData, GetCurrentDataData } from "../services/getCurrentUserData"
 import { AvataBaseWord } from "./AvataBaseWord"
+import { logout } from "../services/logout"
 
 type ProfileProps = {
     avata: string,
@@ -47,7 +48,7 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
         <View>
             <View style = {{width: '100%', paddingLeft: AppPadding, paddingRight: AppPadding, marginTop: 36, alignItems: 'center'}}>
                 <View style = {{position: 'relative'}}>
-                    <AvataBaseWord full_name={user?.user.name?user.user.name:"Anonimous"} customSize={100}/>
+                    <AvataBaseWord full_name={user?.user.username?user.user.username:"Anonimous"} customSize={100}/>
                     <View style = {{position: 'absolute', justifyContent: 'center', alignItems: 'center', bottom: -36, right: -30, transform: [{scale: 0.5}]}}>
                         <SilverIIcon width={100} height={100}/>
                     </View>
@@ -61,7 +62,7 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     start={{x: 1, y: 1}}
                     end={{x: 0, y: 1}}
                 >
-                    <Title title={user?.rankData.rank} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={user?.rankData.rank?user.rankData.rank:'No Rank'} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <Space space={8}/>
                     <SilverIIcon width={100} height={100}/>
                 </LinearGradient>
@@ -73,7 +74,7 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                     end={{x: 1, y: 1}}
                 >
                     <Title title={'Streak'} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
-                    <Title title={`${user?.user.streak}`} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={`${user?.user.streak?user.user.streak:'0'}`} color={WhiteColor} size={24} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <FireIcon width={60} height={60}/>
                 </LinearGradient>
             </View>
@@ -91,6 +92,13 @@ export const Profile = ({avata, userName, rank, focusTimeMilisec} : ProfileProps
                 } onPress={()=>{}}/>
                 <Space space={12}/>
                 <TouchableOpacity onPress={()=>{
+                    logout()
+                        .then(res=>{
+                            console.log("Logout successfully")
+                        })
+                        .catch(error=>[
+                            console.log("Logout error with message:", error)
+                        ])
                     dispatch(resetAuth());
                     navigation.navigate(AuthStackString);
                 }} style = {{padding: 20, backgroundColor: BackgroundColor, justifyContent: 'center', alignItems: 'center', borderRadius: 20}}>

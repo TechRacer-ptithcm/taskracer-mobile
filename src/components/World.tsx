@@ -41,7 +41,7 @@ export const World = ()=>{
         <View style = {{marginLeft: AppPadding, marginRight: AppPadding}}>
             <View style = {{flexDirection: 'row', padding:12, borderRadius: 20, backgroundColor: '#fbd4a4', alignItems: 'center', justifyContent: 'center', marginBottom: AppPadding}}>
                 <View style = {{padding: 12, borderRadius: 20, backgroundColor: NotificationColor, justifyContent: 'center', alignItems: 'center', aspectRatio: 1}}>
-                    <Title title={`#${top}`} color={WhiteColor} size={28} type={true} horizontalPadding={0} verticalPadding={0}/>
+                    <Title title={`#${Math.round(top)}`} color={WhiteColor} size={28} type={true} horizontalPadding={0} verticalPadding={0}/>
                 </View>
                 <Space space={12}/>
                 <View style = {{flex: 1}}>
@@ -55,7 +55,7 @@ export const World = ()=>{
                     end={{x: 0.5, y: 1}}  
                     style={{padding: AppPadding, backgroundColor: PrimaryColorBlue, borderRadius: 20}}
                 >
-                    <View style={{justifyContent: 'center', alignItems: 'center'}}>
+                    <View style={{justifyContent: 'center', alignItems: 'center', zIndex: 6}}>
                         <View style = {{transform: [{translateY: 25}]}}>
                             <UserTopWorld name={leaderBoard[0]?.user?.name?leaderBoard[0].user.name: "Anonimous User"} rank={SilverI} top={1} score={leaderBoard[0]?.score?leaderBoard[0].score: 0}/>
                         </View>

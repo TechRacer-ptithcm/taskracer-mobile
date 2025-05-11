@@ -27,7 +27,7 @@ export const UserTopWorld = ({name, rank, top, score} : UserTopWorldProps)=>{
     return (
         <View style = {{flexDirection: 'column', justifyContent: 'center', alignItems: 'center'}}>
             <View style = {{position: 'relative', alignItems: 'center'}}>
-                <AvataBaseWord full_name={name?name: "Anonimous User"} customSize={80}/>
+                <AvataBaseWord full_name={name?name: "Anonimous User"} customSize={70}/>
                 {top===1 && 
                 <View style={{position: 'absolute', top: -40}}>
                     <CrownIcon width={60} height={60} color={NotificationColor}/>
@@ -41,7 +41,7 @@ export const UserTopWorld = ({name, rank, top, score} : UserTopWorldProps)=>{
             </View>
             <Title title={name?name:"Anonimous User"} size={18} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={6}/>
             <View style ={{padding: 12, paddingLeft: 12, paddingRight: 12, borderRadius: 24, backgroundColor: color}}>
-                <Title title={`Score: ${score}`} color={WhiteColor} size={18} type={true} horizontalPadding={0} verticalPadding={0}/>
+                <Title title={`Score: ${score}`} color={WhiteColor} size={14} type={true} horizontalPadding={0} verticalPadding={0}/>
             </View>
 
         </View>

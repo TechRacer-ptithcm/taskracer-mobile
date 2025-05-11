@@ -38,6 +38,7 @@ import { InputAndButtonSubmit } from "../sections/InputAndButtonSubmit"
 import { assignUserToTask } from "../services/assignUserToTask"
 import { removeUserOutOfTask } from "../services/removeUserOutOfTask"
 import { CreateNewTaskSection } from "../sections/CreateNewTaskSection"
+import { getUserById } from "../services/getUserById"
 
 
 export type TaskInfoScreenParams = {
@@ -60,6 +61,7 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
         priority: 'LOW',
         description: "",
     })
+    const [listUserAssignees, setListUserAssignee] = useState<string[]>([])
     const [isOwner, setIsOwner] = useState<boolean>(false);
     const [listAssignee, setListAssignee] = useState<string[]|null>([])
     const [task, setTask] = useState<Task|undefined>(undefined);
@@ -117,6 +119,9 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
             })
     }, [accessToken])
     useEffect(()=>{
+        
+    }, [])
+    useEffect(()=>{
         dispatch(setLoading(true))
         getTaskById({id: taskId, accessToken:accessToken}).then((res)=>{
             let task:Task = res.data
@@ -130,7 +135,7 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
             setStatus(task.status);
             setPriority(task.priority)
             setDescription(task.description)
-            setListAssignee(task.users);
+            // setListAssignee(task.users);
             setOriginalTaskValue({
                 content: task.content,
                 startTime: startAt,
@@ -139,14 +144,26 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                 priority: task.priority,
                 description: task.description,
             })
+            task.users.forEach(item=>{
+                getUserById({userId: item})
+                    .then(res=>{
+                        console.log("Get user successfullyss", res.data.email);
+                        setListUserAssignee([...listUserAssignees, res.data.email]);
+                    })
+                    .catch(error=>{
+                        console.log("Get user error with message:", error)
+                    })
+            })
             getUserInfo({token: accessToken})
                 .then(respond=>{
                     respond.data.data.id === task.owner && setIsOwner(true)
+                    setUserId(respond.data.data.id)
                     return respond.data.data;
                 })
                 .catch(error=>{
                     console.log('Get user erorr with message:', error)
                 })
+            
         }).catch((err)=>{
             console.log(err);
         }).finally(()=>{
@@ -383,7 +400,7 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     <View>
                         <ScrollView horizontal={false} showsHorizontalScrollIndicator={false}>
                             {
-                                listAssignee?.map((item, index)=>{
+                                listUserAssignees?.map((item, index)=>{
                                     return (
                                         <View key={index} style = {{flexDirection: 'row', alignItems: 'center',  justifyContent: 'space-between', paddingLeft: 12, paddingRight: 12, paddingTop: 6, paddingBottom: 6, borderRadius: 12, backgroundColor: WhiteColor}}>
                                             <View style = {{alignItems: 'center', alignSelf: 'baseline', flexDirection: 'row'}}>
@@ -478,7 +495,19 @@ export const TaskInfoScreen = ({route}: { route: RouteProp<AppStackParamList>; n
                     <Title title={"Add Coworkers"} size={18} color={WhiteColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                     <Space space={12}/>
                     <View style = {{height: 60, width: '80%', transform: [{translateY: -60}]}}>
-                        <InputAndButtonSubmit valueInput={emailCoInput} onSubmit={()=>{}} onValueChange={(value)=>{setEmailCoInput(value)}} placeholder="Add your friend by using email..."/>
+                        <InputAndButtonSubmit valueInput={emailCoInput} onSubmit={()=>{
+                            assignUserToTask({email: emailCoInput, taskId: taskId})
+                                .then(res=>{
+                                    console.log("Assign user successfully")
+                                    setListAssignee([...listAssignee?listAssignee:[], emailCoInput])
+                                    setIsShowAddCo(false);
+                                })
+                                .catch(error=>{
+                                    Alert.alert("User is not valid")
+                                    console.log("Assign user error with message:", error)
+                                })
+                            
+                        }} onValueChange={(value)=>{setEmailCoInput(value)}} placeholder="Add your friend by using email..."/>
                     </View>
                     {/* <View style = {{width: '80%'}}>
                     </View> */}

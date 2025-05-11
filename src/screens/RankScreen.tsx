@@ -21,7 +21,6 @@ export const RankScreen = () => {
     const [mode, setMode] = useState(true);
     const accessToken = useSelector(tokenSelector);
     const [user, setUser] = useState<GetUserInfoData| undefined>(undefined);
-    const [top, setTop] = useState<string>('0');
     useEffect(()=>{
         getUserInfo({token: accessToken})
             .then(res=>{
@@ -32,16 +31,7 @@ export const RankScreen = () => {
                 console.log("Get user error with message:", error);
             })
     }, [])
-    useEffect(()=>{
-            getCurrentData()
-                .then(res=>{
-                    console.log("Get user successfully");
-                    setTop(res.data.rankData.rank)
-                })
-                .catch(error=>{
-                    console.log('Get user error with message:', error);
-                })
-        }, [])
+    
     return (
         <View style={{position: 'relative', flex:1}}>
             <OverlayBubbleAnimation/>
@@ -56,7 +46,7 @@ export const RankScreen = () => {
                 </View>
             </View>
             {mode ? 
-            <Profile avata='' userName={user?.name?user.name:"Owner"} rank={SilverI} focusTimeMilisec={(new Date()).valueOf()}/>
+            <Profile avata='' userName={user?.username?user.username:"Owner"} rank={SilverI} focusTimeMilisec={(new Date()).valueOf()}/>
                 : 
             <World/>
             }

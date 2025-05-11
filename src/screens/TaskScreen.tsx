@@ -24,6 +24,8 @@ import { AppStackParamList } from '../navigation/AppNavigation';
 import { PopUpAddButton } from '../components/PopUpAddButton';
 import { refresh } from '../services/refresh';
 import { setToken } from '../redux/slices/authSlice';
+import { AvataBaseWord } from '../components/AvataBaseWord';
+import { getUserInfo, GetUserInfoData } from '../services/getUserInfo';
 
 
 
@@ -39,6 +41,7 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     nextDay.setDate(nextDay.getDate() + 3);
     var previousDay = new Date();
     previousDay.setDate(previousDay.getDate() - 9);
+    const [user, setUser] = useState<GetUserInfoData|undefined>(undefined)
     const navigation = useNavigation<NativeStackNavigationProp<AppStackParamList>>();
     const accessToken = useSelector(tokenSelector);
     const [listTask, setListTask] = useState<GetAllTasksData[]>([]);
@@ -55,6 +58,16 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
     const handleClickTask = (taskId: string)=>{
         navigation.navigate(TaskInfoString, {taskId: taskId, listSubTasks: taskMap.get(taskId), taskMap: taskMap});
     }
+    useEffect(()=>{
+        getUserInfo({token: accessToken})
+            .then(res=>{
+                setUser(res.data.data)
+            })
+            .catch(error=>{
+                console.log("Get user error with message:", error)
+            })
+    }, [])
+
     useFocusEffect(
         useCallback(()=>{
             dispatch(setLoading(true));
@@ -104,10 +117,10 @@ export const TaskScreen = ({userName, avata}: TaskScreenProps) => {
             <View style = {{position: 'relative', flex: 1}}>
                 <View style={{flexDirection: 'row', alignItems: 'center', justifyContent:'space-between',padding: AppPadding,  marginTop: 36}}>
                     <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                        <Image source={{uri: 'https://avatars.githubusercontent.com/u/59484967?u=ce3a100108edb093ed79603c9c7f8447aa0bd067&v=4&size=80'}} style={{width: 50, height: 50, borderRadius: 50}}/>
+                        <AvataBaseWord full_name={user?.name?user.name: "Anonimous"} customSize={50}/>
                         <Space space={12}/>
                         <View>
-                            <Title title={userName} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
+                            <Title title={user?.username?user.username: "Anonimous"} size={18} color={GrayColor} type={true} horizontalPadding={0} verticalPadding={0}/>
                             <Title title={currentHour<12 ? 'Good morning' : 'Good night'} size={12} color={GrayColor} type={false} horizontalPadding={0} verticalPadding={0}/>
                         </View>
                     </View>
